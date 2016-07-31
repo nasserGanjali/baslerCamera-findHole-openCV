@@ -2,6 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QDebug>
+
+#include "basler.h"
+
+#define WIDTH 800
+#define HEIGHT 600
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +23,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    basler *camera;
 };
 
 #endif // MAINWINDOW_H
