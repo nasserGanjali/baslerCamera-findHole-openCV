@@ -9,10 +9,20 @@
 #include <QtConcurrentRun>
 #include <QTimer>
 
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
+//#include "opencv2/core/core.hpp"
+#include <stdlib.h>
+#include <stdio.h>
+#include <iostream>
+#include <fstream>
+
 #include "basler.h"
 
 #define WIDTH 800
 #define HEIGHT 600
+
+using namespace cv;
 
 namespace Ui {
 class MainWindow;
@@ -33,6 +43,7 @@ private:
     QGraphicsScene *scene;
     basler *camera;
 
+    void findHoles();
     QImage *imgUpdateView;
     char *buffer[10];
     int indexBuffer;
