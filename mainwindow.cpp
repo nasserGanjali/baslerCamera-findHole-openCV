@@ -8,6 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     indexBuffer = -1;
+    CV_lowerd = 200; CV_upperb = 255;
+    CV_kernelGain = 15;
 
     //camera
     camera = new basler();
@@ -22,15 +24,12 @@ MainWindow::MainWindow(QWidget *parent) :
     for(int i = 0; i < 10; i++)
         buffer[i] = (char *)malloc(WIDTH * HEIGHT);
 
-    //QtConcurrent::run(MainWindow::getFrame);
-   // QtConcurrent::run(this,&MainWindow::getFrame);
-
     tmrGraphicView.setInterval(500);
     connect(&tmrGraphicView,SIGNAL(timeout()),SLOT(updateGraphicView()));
     tmrGraphicView.start();
 
+    dialogConfig = new Dialog(0,this);
     QtConcurrent::run(this,&MainWindow::getFrame);
-//    getFrame();
 }
 
 MainWindow::~MainWindow()
@@ -63,12 +62,13 @@ void MainWindow::findHoles()
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
 
-    int lowerd = 200, upperb = 256;
-    cv::inRange(img, (lowerd,lowerd,lowerd), (upperb ,upperb, upperb),img);
-    Mat kernel = cv::Mat::ones(15,15,CV_8U);
+    //
+    cv::inRange(img, (CV_lowerd,CV_lowerd,CV_lowerd), (CV_upperb ,CV_upperb, CV_upperb),img);
+    Mat kernel = cv::Mat::ones(CV_kernelGain,CV_kernelGain,CV_8U);
     morphologyEx(img,img, cv::MORPH_OPEN,kernel);
-//    Mat contours;
+
     findContours(img,contours,hierarchy,RETR_CCOMP,CHAIN_APPROX_SIMPLE,Point(0,0));
+
     Mat drawing = Mat::zeros(img.size(),CV_8U );
     RNG rng(12345);
 
@@ -107,4 +107,10 @@ void MainWindow::updateGraphicView()
 
     scene->addPixmap(QPixmap::fromImage(*imgUpdateView));
     ui->graphicsView->show();
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+//    Dialog dialog(0,this);
+    dialogConfig->show();
 }

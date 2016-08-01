@@ -18,12 +18,14 @@
 #include <fstream>
 
 #include "basler.h"
+#include "dialog.h"
 
 #define WIDTH 800
 #define HEIGHT 600
 
 using namespace cv;
 
+class Dialog;
 namespace Ui {
 class MainWindow;
 }
@@ -33,9 +35,13 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    int CV_lowerd , CV_upperb;
+    int CV_kernelGain;
+
     explicit MainWindow(QWidget *parent = 0);
     void getFrame();
     ~MainWindow();
+
 
 private:
     Ui::MainWindow *ui;
@@ -43,6 +49,7 @@ private:
     QGraphicsScene *scene;
     basler *camera;
 
+    Dialog *dialogConfig;
     void findHoles();
     QImage *imgUpdateView;
     char *buffer[10];
@@ -51,6 +58,7 @@ private:
 private slots:
     void updateGraphicView();
 
+    void on_pushButton_clicked();
 };
 
 #endif // MAINWINDOW_H
