@@ -161,7 +161,7 @@ int basler::startTriggerMode()
 {
     // Automagically call PylonInitialize and PylonTerminate to ensure that the pylon runtime
     // system is initialized during the lifetime of this object.
-
+    int result = 0;
     try
     {
         // Get the transport layer factory.
@@ -239,7 +239,7 @@ int basler::startTriggerMode()
 
         // Wait for the grabbed image with a timeout of 3 seconds.
 
-        if (StreamGrabber.GetWaitObject().Wait(10000))
+        if (StreamGrabber.GetWaitObject().Wait(-1))
         {
             // Get the grab result from the grabber's result queue.
             GrabResult Result;
@@ -252,6 +252,7 @@ int basler::startTriggerMode()
                 cout << "Size: " << Result.GetSizeX() << " x " << Result.GetSizeY() << endl;
 
                 memcpy(globalImageBuffer,(uint8_t *) Result.Buffer(),WIDTH*HEIGHT);
+                result = 1;
                 // Get the pointer to the image buffer.
                 //const uint8_t *pImageBuffer = (uint8_t *) Result.Buffer();
                 //cout << "Gray value of first pixel: " << (uint32_t) pImageBuffer[0]
@@ -269,6 +270,7 @@ int basler::startTriggerMode()
                 cerr << "Error description : "
                      << Result.GetErrorDescription() << endl;
 
+                result = -1;
             }
         }
         else
@@ -283,6 +285,7 @@ int basler::startTriggerMode()
             // Get all buffers back.
             for (GrabResult r; StreamGrabber.RetrieveResult(r););
 
+            result = -1;
         }
 
 
@@ -303,6 +306,7 @@ int basler::startTriggerMode()
 
         // Free memory of image buffer.
         delete[] pBuffer;
+
     }
     catch (const GenericException &e)
     {
@@ -310,11 +314,11 @@ int basler::startTriggerMode()
         cerr << "An exception occurred!" << endl
              << e.GetDescription() << endl;
 
-        return 1;
+        result = -1;
     }
 
     // Quit the application.
-    return 0;
+    return result;
 }
 
 void basler::loadConfig()
