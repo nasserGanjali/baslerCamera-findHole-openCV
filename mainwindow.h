@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
+#include <QThread>
 
 #include "basler.h"
 #include "dialog.h"
@@ -39,9 +40,11 @@ class MainWindow : public QMainWindow
 public:
     int CV_lowerd , CV_upperb;
     int CV_kernelGain;
+    int objectThr;
     bool isTriggeMode;
-    bool isHollFinding;
+//    bool isHollFinding;
     bool ShowOriginalImage;
+    bool showFullSizeImage;
     explicit MainWindow(QWidget *parent = 0);
     void getFrame();
     ~MainWindow();
@@ -50,15 +53,19 @@ public:
 private:
     Ui::MainWindow *ui;
     QTimer tmrGraphicView;
+    void getFrameWhile();
     QGraphicsScene *scene;
     basler *camera;
     bool startCapture;
 
     Dialog *dialogConfig;
-    void findHoles();
+    void findHoles(int index);
     QImage *imgUpdateView;
     char *buffer[10];
+    char *bufferCircle[10];
+    int circleSize[10];
     int indexBuffer;
+    void findDiameter(char *input, int index);
 
 private slots:
     void updateGraphicView();

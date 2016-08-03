@@ -13,9 +13,12 @@ Dialog::Dialog(QWidget *parent, MainWindow *mainwindow) :
     ui->lblMin->setText(QString::number(Main->CV_lowerd));
     ui->ScrMax->setValue(Main->CV_upperb);
     ui->lblMax->setText(QString::number(Main->CV_upperb));
+    ui->scrObjectThr->setValue(Main->objectThr);
+    ui->lblObjectThr->setText(QString::number(Main->objectThr));
+    ui->cbxShowFullSize->setChecked(Main->showFullSizeImage);
 
     ui->rbnCameraMode->setChecked(!Main->isTriggeMode);
-    ui->rbnHoll->setChecked(Main->isHollFinding);
+//    ui->rbnHoll->setChecked(Main->isHollFinding);
     ui->cbxShowOriginalImage->setChecked(Main->ShowOriginalImage);
 }
 
@@ -29,21 +32,27 @@ void Dialog::on_brnOK_clicked()
     Main->CV_lowerd = ui->scrMin->value();
     Main->CV_upperb = ui->ScrMax->value();
     Main->CV_kernelGain = ui->scrKernel->value();
+    Main->objectThr = ui->scrObjectThr->value();
 
     if(ui->rbnCameraMode->isChecked())
         Main->isTriggeMode = false;
     else
         Main->isTriggeMode = true;
 
-    if(ui->rbnHoll->isChecked())
-        Main->isHollFinding = true;
-    else
-        Main->isHollFinding = false;
+//    if(ui->rbnHoll->isChecked())
+//        Main->isHollFinding = true;
+//    else
+//        Main->isHollFinding = false;
 
     if(ui->cbxShowOriginalImage->isChecked())
         Main->ShowOriginalImage = true;
     else
         Main->ShowOriginalImage = false;
+
+    if(ui->cbxShowFullSize->isChecked())
+        Main->showFullSizeImage = true;
+    else
+        Main->showFullSizeImage = false;
 
     this->close();
 }
@@ -73,25 +82,35 @@ void Dialog::on_brnApply_clicked()
     Main->CV_lowerd = ui->scrMin->value();
     Main->CV_upperb = ui->ScrMax->value();
     Main->CV_kernelGain = ui->scrKernel->value();
+    Main->objectThr = ui->scrObjectThr->value();
 
     if(ui->rbnCameraMode->isChecked())
         Main->isTriggeMode = false;
     else
         Main->isTriggeMode = true;
 
-    if(ui->rbnHoll->isChecked())
-        Main->isHollFinding = true;
-    else
-        Main->isHollFinding = false;
+//    if(ui->rbnHoll->isChecked())
+//        Main->isHollFinding = true;
+//    else
+//        Main->isHollFinding = false;
 
     if(ui->cbxShowOriginalImage->isChecked())
         Main->ShowOriginalImage = true;
     else
         Main->ShowOriginalImage = false;
 
+    if(ui->cbxShowFullSize->isChecked())
+        Main->showFullSizeImage = true;
+    else
+        Main->showFullSizeImage = false;
 }
 
 void Dialog::on_rbnCameraMode_clicked(bool checked)
 {
 
+}
+
+void Dialog::on_scrObjectThr_valueChanged(int value)
+{
+    ui->lblObjectThr->setText(QString::number(value));
 }

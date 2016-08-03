@@ -33,6 +33,8 @@ private slots:
 
     void on_rbnCameraMode_clicked(bool checked);
 
+    void on_scrObjectThr_valueChanged(int value);
+
 private:
     Ui::Dialog *ui;
     MainWindow *Main;
