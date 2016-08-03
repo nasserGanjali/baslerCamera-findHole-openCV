@@ -40,7 +40,8 @@ public:
     int CV_lowerd , CV_upperb;
     int CV_kernelGain;
     bool isTriggeMode;
-     bool isHollFinding;
+    bool isHollFinding;
+    bool ShowOriginalImage;
     explicit MainWindow(QWidget *parent = 0);
     void getFrame();
     ~MainWindow();

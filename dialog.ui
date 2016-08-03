@@ -197,14 +197,27 @@
   <widget class="QCheckBox" name="rbnHoll">
    <property name="geometry">
     <rect>
-     <x>220</x>
-     <y>220</y>
+     <x>60</x>
+     <y>250</y>
      <width>111</width>
      <height>22</height>
     </rect>
    </property>
    <property name="text">
     <string>Holl Finding</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="cbxShowOriginalImage">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>220</y>
+     <width>111</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Show original</string>
    </property>
   </widget>
  </widget>

@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     startCapture = 0;
     isTriggeMode = 1;
     isHollFinding = 1;
+    ShowOriginalImage = 0;
     CV_lowerd = 200; CV_upperb = 255;
     CV_kernelGain = 15;
 
@@ -63,7 +64,9 @@ void MainWindow::getFrame()
 
 void MainWindow::findHoles()
 {
-    cv::Mat img(600,800,CV_8U,buffer[indexBuffer]);
+    char tmpBuffer[WIDTH*HEIGHT];
+    memcpy(tmpBuffer,buffer[indexBuffer],WIDTH*HEIGHT);
+    cv::Mat img(HEIGHT,WIDTH,CV_8U,tmpBuffer);
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
 
@@ -82,18 +85,20 @@ void MainWindow::findHoles()
 
     for(int i = 0; i < contours.size(); i++)
     {
-        Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255) , rng.uniform(0, 255));
-        drawContours(drawing, contours , i , color , 2,8,hierarchy,0,Point());
 
+        if(!ShowOriginalImage)
+        {
+            Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255) , rng.uniform(0, 255));
+            drawContours(drawing, contours , i , color , 2,8,hierarchy,0,Point());
+        }
         minEnclosingCircle(Mat(contours[i]),center[i],radius[i]);
 
         qDebug()<<"x: "<<center[i].x<<" y: "<<center[i].y<<" radius : "<<radius[i];
     }
 
-    //    namedWindow("test");
-    //    imshow("test",drawing);
 
-    memcpy(buffer[indexBuffer], drawing.data,WIDTH * HEIGHT);
+    if(!ShowOriginalImage)
+        memcpy(buffer[indexBuffer], drawing.data,WIDTH * HEIGHT);
 }
 
 void MainWindow::updateGraphicView()

@@ -16,7 +16,7 @@ Dialog::Dialog(QWidget *parent, MainWindow *mainwindow) :
 
     ui->rbnCameraMode->setChecked(!Main->isTriggeMode);
     ui->rbnHoll->setChecked(Main->isHollFinding);
-
+    ui->cbxShowOriginalImage->setChecked(Main->ShowOriginalImage);
 }
 
 Dialog::~Dialog()
@@ -39,6 +39,11 @@ void Dialog::on_brnOK_clicked()
         Main->isHollFinding = true;
     else
         Main->isHollFinding = false;
+
+    if(ui->cbxShowOriginalImage->isChecked())
+        Main->ShowOriginalImage = true;
+    else
+        Main->ShowOriginalImage = false;
 
     this->close();
 }
@@ -78,6 +83,11 @@ void Dialog::on_brnApply_clicked()
         Main->isHollFinding = true;
     else
         Main->isHollFinding = false;
+
+    if(ui->cbxShowOriginalImage->isChecked())
+        Main->ShowOriginalImage = true;
+    else
+        Main->ShowOriginalImage = false;
 
 }
 
