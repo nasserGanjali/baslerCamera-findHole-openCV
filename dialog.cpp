@@ -14,6 +14,9 @@ Dialog::Dialog(QWidget *parent, MainWindow *mainwindow) :
     ui->ScrMax->setValue(Main->CV_upperb);
     ui->lblMax->setText(QString::number(Main->CV_upperb));
 
+    ui->rbnCameraMode->setChecked(!Main->isTriggeMode);
+    ui->rbnHoll->setChecked(Main->isHollFinding);
+
 }
 
 Dialog::~Dialog()
@@ -26,6 +29,17 @@ void Dialog::on_brnOK_clicked()
     Main->CV_lowerd = ui->scrMin->value();
     Main->CV_upperb = ui->ScrMax->value();
     Main->CV_kernelGain = ui->scrKernel->value();
+
+    if(ui->rbnCameraMode->isChecked())
+        Main->isTriggeMode = false;
+    else
+        Main->isTriggeMode = true;
+
+    if(ui->rbnHoll->isChecked())
+        Main->isHollFinding = true;
+    else
+        Main->isHollFinding = false;
+
     this->close();
 }
 
@@ -54,4 +68,20 @@ void Dialog::on_brnApply_clicked()
     Main->CV_lowerd = ui->scrMin->value();
     Main->CV_upperb = ui->ScrMax->value();
     Main->CV_kernelGain = ui->scrKernel->value();
+
+    if(ui->rbnCameraMode->isChecked())
+        Main->isTriggeMode = false;
+    else
+        Main->isTriggeMode = true;
+
+    if(ui->rbnHoll->isChecked())
+        Main->isHollFinding = true;
+    else
+        Main->isHollFinding = false;
+
+}
+
+void Dialog::on_rbnCameraMode_clicked(bool checked)
+{
+
 }

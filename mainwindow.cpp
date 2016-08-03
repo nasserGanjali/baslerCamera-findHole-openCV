@@ -7,12 +7,15 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    indexBuffer = -1;
+    indexBuffer = 0;
+    startCapture = 0;
+    isTriggeMode = 1;
+    isHollFinding = 1;
     CV_lowerd = 200; CV_upperb = 255;
     CV_kernelGain = 15;
 
     //camera
-    camera = new basler();
+    camera = new basler(this);
     if(camera->connect())
         qDebug()<<"camera is connected";
     else
@@ -40,25 +43,27 @@ MainWindow::~MainWindow()
 
 void MainWindow::getFrame()
 {
-    camera->startTriggerMode();
-    //camera->start();
-
-
-    memcpy(buffer[indexBuffer + 1], (uchar*)camera->globalImageBuffer, WIDTH * HEIGHT);
-    findHoles();
-
-    if(indexBuffer + 1 >= 9)
-        indexBuffer = 0;
+    if(isTriggeMode)
+        camera->startTriggerMode();
     else
-        indexBuffer++;
+        camera->start();
 
+    startCapture = 1;
+
+    memcpy(buffer[indexBuffer], (uchar*)camera->globalImageBuffer, WIDTH * HEIGHT);
+
+    if(isHollFinding)
+        findHoles();
+
+
+    indexBuffer = (indexBuffer + 1) % 10;
 
     getFrame();//this->thread()->sleep(1000);
 }
 
 void MainWindow::findHoles()
 {
-    cv::Mat img(600,800,CV_8U,buffer[indexBuffer + 1]);
+    cv::Mat img(600,800,CV_8U,buffer[indexBuffer]);
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
 
@@ -85,25 +90,29 @@ void MainWindow::findHoles()
         qDebug()<<"x: "<<center[i].x<<" y: "<<center[i].y<<" radius : "<<radius[i];
     }
 
-//    namedWindow("test");
-//    imshow("test",drawing);
+    //    namedWindow("test");
+    //    imshow("test",drawing);
 
-    memcpy(buffer[indexBuffer + 1], drawing.data,WIDTH * HEIGHT);
+    memcpy(buffer[indexBuffer], drawing.data,WIDTH * HEIGHT);
 }
 
 void MainWindow::updateGraphicView()
 {
-//    getFrame();
-    if(indexBuffer < 0)
+    //    getFrame();
+    if(!startCapture)
         return;
+    int index = indexBuffer - 1;
+    if(index < 0)
+        index = 9;
+    //qDebug()<<index;
     static int lastBufferIndex = -1;
-    if(lastBufferIndex == indexBuffer)
+    if(lastBufferIndex == indexBuffer - 1)
         return;
 
-    lastBufferIndex = indexBuffer;
+    lastBufferIndex = indexBuffer - 1;
     ui->graphicsView->scene()->clear();
 
-    imgUpdateView = new QImage((uchar*)buffer[indexBuffer], WIDTH, HEIGHT, QImage::Format_Indexed8);
+    imgUpdateView = new QImage((uchar*)buffer[index], WIDTH, HEIGHT, QImage::Format_Indexed8);
 
     scene->addPixmap(QPixmap::fromImage(*imgUpdateView));
     ui->graphicsView->show();
@@ -111,6 +120,6 @@ void MainWindow::updateGraphicView()
 
 void MainWindow::on_pushButton_clicked()
 {
-//    Dialog dialog(0,this);
+    //    Dialog dialog(0,this);
     dialogConfig->show();
 }

@@ -31,6 +31,8 @@ private slots:
 
     void on_brnApply_clicked();
 
+    void on_rbnCameraMode_clicked(bool checked);
+
 private:
     Ui::Dialog *ui;
     MainWindow *Main;

@@ -30,6 +30,8 @@ namespace Ui {
 class MainWindow;
 }
 
+class basler;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -37,7 +39,8 @@ class MainWindow : public QMainWindow
 public:
     int CV_lowerd , CV_upperb;
     int CV_kernelGain;
-
+    bool isTriggeMode;
+     bool isHollFinding;
     explicit MainWindow(QWidget *parent = 0);
     void getFrame();
     ~MainWindow();
@@ -48,6 +51,7 @@ private:
     QTimer tmrGraphicView;
     QGraphicsScene *scene;
     basler *camera;
+    bool startCapture;
 
     Dialog *dialogConfig;
     void findHoles();

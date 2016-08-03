@@ -10,6 +10,10 @@
 #define WIDTH 800
 #define HEIGHT 600
 
+#include "mainwindow.h"
+
+class MainWindow;
+
 // Namespace for using pylon objects.
 using namespace Pylon;
 #include <pylon/gige/BaslerGigECamera.h>
@@ -25,7 +29,8 @@ using namespace std;
 class basler
 {
 public:
-    basler();
+    basler(MainWindow *mainwindow);
+    MainWindow *Main;
     int start();
     int startTriggerMode();
     void loadConfig();

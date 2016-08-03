@@ -1,7 +1,8 @@
 #include "basler.h"
 
-basler::basler()
+basler::basler(MainWindow *mainwindow)
 {
+    Main = mainwindow;
 }
 
 bool basler::connect()
@@ -239,55 +240,63 @@ int basler::startTriggerMode()
 
         // Wait for the grabbed image with a timeout of 3 seconds.
 
-        if (StreamGrabber.GetWaitObject().Wait(-1))
+        bool wait = true;
+        while(wait)
         {
-            // Get the grab result from the grabber's result queue.
-            GrabResult Result;
-            StreamGrabber.RetrieveResult(Result);
-
-            if (Result.Succeeded())
+            if (StreamGrabber.GetWaitObject().Wait(1000) )
             {
-                // Grabbing was successful, process image.
-                // cout << "Image #" << n << " acquired!" << endl;
-                cout << "Size: " << Result.GetSizeX() << " x " << Result.GetSizeY() << endl;
+                // Get the grab result from the grabber's result queue.
+                GrabResult Result;
+                StreamGrabber.RetrieveResult(Result);
 
-                memcpy(globalImageBuffer,(uint8_t *) Result.Buffer(),WIDTH*HEIGHT);
-                result = 1;
-                // Get the pointer to the image buffer.
-                //const uint8_t *pImageBuffer = (uint8_t *) Result.Buffer();
-                //cout << "Gray value of first pixel: " << (uint32_t) pImageBuffer[0]
-                //     << endl << endl;
+                if (Result.Succeeded())
+                {
+                    // Grabbing was successful, process image.
+                    // cout << "Image #" << n << " acquired!" << endl;
+                    cout << "Size: " << Result.GetSizeX() << " x " << Result.GetSizeY() << endl;
 
-                // Reuse the buffer for grabbing the next image.
-                //StreamGrabber.QueueBuffer(Result.Handle(), NULL);
+                    memcpy(globalImageBuffer,(uint8_t *) Result.Buffer(),WIDTH*HEIGHT);
+                    result = 1;
+                     wait = false;
+                    // Get the pointer to the image buffer.
+                    //const uint8_t *pImageBuffer = (uint8_t *) Result.Buffer();
+                    //cout << "Gray value of first pixel: " << (uint32_t) pImageBuffer[0]
+                    //     << endl << endl;
+
+                    // Reuse the buffer for grabbing the next image.
+                    //StreamGrabber.QueueBuffer(Result.Handle(), NULL);
+                }
+                else
+                {
+                    // Error handling
+                    cerr << "No image acquired!" << endl;
+                    cerr << "Error code : 0x" << hex
+                         << Result.GetErrorCode() << endl;
+                    cerr << "Error description : "
+                         << Result.GetErrorDescription() << endl;
+
+                    result = -1;
+                    wait = false;
+                }
             }
             else
             {
-                // Error handling
-                cerr << "No image acquired!" << endl;
-                cerr << "Error code : 0x" << hex
-                     << Result.GetErrorCode() << endl;
-                cerr << "Error description : "
-                     << Result.GetErrorDescription() << endl;
+                if(Main->isTriggeMode)
+                    continue;
+                // Timeout
+                cerr << "Timeout occurred!" << endl;
+
+                // Get the pending buffer back (You are not allowed to deregister
+                // buffers when they are still queued).
+                StreamGrabber.CancelGrab();
+
+                // Get all buffers back.
+                for (GrabResult r; StreamGrabber.RetrieveResult(r););
 
                 result = -1;
+                wait = false;
             }
         }
-        else
-        {
-            // Timeout
-            cerr << "Timeout occurred!" << endl;
-
-            // Get the pending buffer back (You are not allowed to deregister
-            // buffers when they are still queued).
-            StreamGrabber.CancelGrab();
-
-            // Get all buffers back.
-            for (GrabResult r; StreamGrabber.RetrieveResult(r););
-
-            result = -1;
-        }
-
 
         // Clean up
 

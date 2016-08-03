@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>404</width>
+    <height>365</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -146,7 +146,7 @@
    <property name="geometry">
     <rect>
      <x>240</x>
-     <y>240</y>
+     <y>290</y>
      <width>93</width>
      <height>27</height>
     </rect>
@@ -159,7 +159,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>240</y>
+     <y>290</y>
      <width>93</width>
      <height>27</height>
     </rect>
@@ -172,13 +172,39 @@
    <property name="geometry">
     <rect>
      <x>140</x>
-     <y>240</y>
+     <y>290</y>
      <width>93</width>
      <height>27</height>
     </rect>
    </property>
    <property name="text">
     <string>Apply</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="rbnCameraMode">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>220</y>
+     <width>93</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Test Mode</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="rbnHoll">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>220</y>
+     <width>111</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Holl Finding</string>
    </property>
   </widget>
  </widget>
