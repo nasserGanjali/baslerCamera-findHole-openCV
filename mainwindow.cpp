@@ -10,9 +10,14 @@ MainWindow::MainWindow(QWidget *parent) :
     indexBuffer = 0;
     startCapture = 0;
     isTriggeMode = 1;
+    appClosed = 0;
     //    isHollFinding = 1;
     ShowOriginalImage = 0;
     showFullSizeImage = 0;
+    maxHollSize = 40;
+    minHollSize = 17;
+    defectProdocts = 0;
+    totalProdocts = 0;
     imgUpdateView = NULL;
     objectThr = 220;
     CV_lowerd = 200; CV_upperb = 255;
@@ -62,9 +67,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::getFrameWhile()
 {
-    while(1)
+    while(!appClosed)
     {
-//        qDebug()<<"time :"<<QTime::currentTime().toString();
+        //        qDebug()<<"time :"<<QTime::currentTime().toString();
         getFrame();
     }
 }
@@ -109,7 +114,7 @@ void MainWindow::getFrame()
     if(mode && !triggerTimeout)
     {
         // int index = (indexBuffer == 0) ? 9 : indexBuffer - 1;
-         QtConcurrent::run(this,&MainWindow::Algorithm,index);
+        QtConcurrent::run(this,&MainWindow::Algorithm,index);
     }
     else
         indexBuffer = (index + 1) % 10;
@@ -127,8 +132,8 @@ void MainWindow::Algorithm(int index)
 {
     char test[800*600];
     memcpy(test,buffer[index],800*600);
-    findDiameter(test,index);
-    findHoles(index);
+    if(findDiameter(test,index))
+        findHoles(index);
     indexBuffer = (index + 1) % 10;
 }
 
@@ -155,7 +160,9 @@ void MainWindow::findHoles(int index)
         vector<Point2f> center(contours.size());
         vector<float> radius (contours.size());
 
-        for(int i = 0; i < contours.size(); i++)
+        int i = 0;
+        int defect = false;
+        for(i = 0; i < contours.size(); i++)
         {
 
             if(!ShowOriginalImage)
@@ -165,9 +172,18 @@ void MainWindow::findHoles(int index)
             }
             minEnclosingCircle(Mat(contours[i]),center[i],radius[i]);
 
+            if(radius[i] < minHollSize || radius[i] > maxHollSize)
+                defect = true;
             qDebug()<<"x: "<<center[i].x<<" y: "<<center[i].y<<" radius : "<<radius[i];
         }
+        if(i != 3)
+            defect = true;
 
+        totalProdocts ++;
+        if(defect)
+        {
+            defectProdocts ++;
+        }
 
         if(!ShowOriginalImage)
             memcpy(buffer[index], drawing.data,WIDTH * HEIGHT);
@@ -176,42 +192,55 @@ void MainWindow::findHoles(int index)
     {
         try
         {
-        char *tmpBuffer = (char *)malloc(circleSize[index] * circleSize[index]);
-        memcpy(tmpBuffer,bufferCircle[index],circleSize[index] * circleSize[index]);
-        cv::Mat img(circleSize[index],circleSize[index],CV_8U,tmpBuffer);
-        vector<vector<Point> > contours;
-        vector<Vec4i> hierarchy;
+            if(circleSize[index] <= 0)
+                return;
+            char *tmpBuffer = (char *)malloc(circleSize[index] * circleSize[index]);
+            memcpy(tmpBuffer,bufferCircle[index],circleSize[index] * circleSize[index]);
+            cv::Mat img(circleSize[index],circleSize[index],CV_8U,tmpBuffer);
+            vector<vector<Point> > contours;
+            vector<Vec4i> hierarchy;
 
-        //
-        cv::inRange(img, (CV_lowerd,CV_lowerd,CV_lowerd), (CV_upperb ,CV_upperb, CV_upperb),img);
-        Mat kernel = cv::Mat::ones(CV_kernelGain,CV_kernelGain,CV_8U);
-        morphologyEx(img,img, cv::MORPH_OPEN,kernel);
+            //
+            cv::inRange(img, (CV_lowerd,CV_lowerd,CV_lowerd), (CV_upperb ,CV_upperb, CV_upperb),img);
+            Mat kernel = cv::Mat::ones(CV_kernelGain,CV_kernelGain,CV_8U);
+            morphologyEx(img,img, cv::MORPH_OPEN,kernel);
 
-        findContours(img,contours,hierarchy,RETR_CCOMP,CHAIN_APPROX_SIMPLE,Point(0,0));
+            findContours(img,contours,hierarchy,RETR_CCOMP,CHAIN_APPROX_SIMPLE,Point(0,0));
 
-        Mat drawing = Mat::zeros(img.size(),CV_8U );
-        RNG rng(12345);
+            Mat drawing = Mat::zeros(img.size(),CV_8U );
+            RNG rng(12345);
 
-        vector<Point2f> center(contours.size());
-        vector<float> radius (contours.size());
+            vector<Point2f> center(contours.size());
+            vector<float> radius (contours.size());
 
-        for(int i = 0; i < contours.size(); i++)
-        {
+            int i = 0;
+            int defect = false;
+            for(i = 0; i < contours.size(); i++)
+            {
+
+                if(!ShowOriginalImage)
+                {
+                    Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255) , rng.uniform(0, 255));
+                    drawContours(drawing, contours , i , color , 2,8,hierarchy,0,Point());
+                }
+                minEnclosingCircle(Mat(contours[i]),center[i],radius[i]);
+
+                if(radius[i] < minHollSize || radius[i] > maxHollSize)
+                    defect = true;
+                qDebug()<<"x: "<<center[i].x<<" y: "<<center[i].y<<" radius : "<<radius[i];
+            }
+            if(i != 2)
+                defect = true;
+
+            totalProdocts ++;
+            if(defect)
+            {
+                defectProdocts ++;
+            }
 
             if(!ShowOriginalImage)
-            {
-                Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255) , rng.uniform(0, 255));
-                drawContours(drawing, contours , i , color , 2,8,hierarchy,0,Point());
-            }
-            minEnclosingCircle(Mat(contours[i]),center[i],radius[i]);
-
-            qDebug()<<"x: "<<center[i].x<<" y: "<<center[i].y<<" radius : "<<radius[i];
-        }
-
-
-        if(!ShowOriginalImage)
-            memcpy(bufferCircle[index], drawing.data,circleSize[index] * circleSize[index]);
-        free(tmpBuffer);
+                memcpy(bufferCircle[index], drawing.data,circleSize[index] * circleSize[index]);
+            free(tmpBuffer);
         }catch(const GenericException &e)
         {
             qDebug()<<"1";
@@ -234,7 +263,7 @@ void MainWindow::updateGraphicView()
 
     lastBufferIndex = indexBuffer - 1;
     ui->graphicsView->scene()->clear();
-//    ui->graphicsView->scene()->
+    //    ui->graphicsView->scene()->
     if(imgUpdateView != NULL)
         free(imgUpdateView);
 
@@ -245,6 +274,9 @@ void MainWindow::updateGraphicView()
 
     scene->addPixmap(QPixmap::fromImage(*imgUpdateView));
     ui->graphicsView->show();
+
+    ui->lblDefect->setText(QString::number(defectProdocts));
+    ui->lblTotal->setText(QString::number(totalProdocts));
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -253,8 +285,9 @@ void MainWindow::on_pushButton_clicked()
     dialogConfig->show();
 }
 
-void MainWindow::findDiameter(char *input,int index)
+bool MainWindow::findDiameter(char *input,int index)
 {
+    bool result = true;
     int Ui,Uj,Ri,Rj;
     for(int j = 10;j < 600; j++)
         for(int i = 799; i > 300; i--)
@@ -292,6 +325,7 @@ void MainWindow::findDiameter(char *input,int index)
         Ri = WIDTH / 2;
         Ui = WIDTH / 2 - 10;
         Uj = HEIGHT / -10;
+        result = false;
     }
     if(k % 2 != 0)
         k --;
@@ -300,13 +334,16 @@ void MainWindow::findDiameter(char *input,int index)
 
 
     int I ,J;
+
     for(int j = Rj-k; j < Rj+k; j++)
         for(int i = Ui-k; i < Ui+k; i++)
         {
             I = (i - Ui+k); J = (j - Rj+k);
+            if((I + J * k*2) > WIDTH * HEIGHT  || (i + j * 800) > WIDTH * HEIGHT )
+                return false;
             bufferCircle[index][I + J * k*2] = input[i + j * 800];
         }
-
+    return result;
 }
 
 void MainWindow::on_btnTestGPIO_clicked()
@@ -323,4 +360,13 @@ void MainWindow::on_btnTestGPIO_clicked()
         first = true;
     }
 
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    qDebug()<<"close";
+    appClosed = 1;
+    stopTriggeTest();
+    camera->closeAllCameras();
+    event->accept();
 }

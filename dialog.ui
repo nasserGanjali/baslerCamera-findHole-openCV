@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>406</width>
-    <height>428</height>
+    <height>548</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -146,7 +146,7 @@
    <property name="geometry">
     <rect>
      <x>240</x>
-     <y>360</y>
+     <y>500</y>
      <width>93</width>
      <height>27</height>
     </rect>
@@ -159,7 +159,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>360</y>
+     <y>500</y>
      <width>93</width>
      <height>27</height>
     </rect>
@@ -172,7 +172,7 @@
    <property name="geometry">
     <rect>
      <x>140</x>
-     <y>360</y>
+     <y>500</y>
      <width>93</width>
      <height>27</height>
     </rect>
@@ -185,7 +185,7 @@
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>250</y>
+     <y>420</y>
      <width>93</width>
      <height>22</height>
     </rect>
@@ -198,7 +198,7 @@
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>280</y>
+     <y>450</y>
      <width>111</width>
      <height>22</height>
     </rect>
@@ -211,7 +211,7 @@
    <property name="geometry">
     <rect>
      <x>200</x>
-     <y>250</y>
+     <y>420</y>
      <width>111</width>
      <height>22</height>
     </rect>
@@ -269,13 +269,84 @@
    <property name="geometry">
     <rect>
      <x>200</x>
-     <y>280</y>
+     <y>450</y>
      <width>121</width>
      <height>22</height>
     </rect>
    </property>
    <property name="text">
     <string>Show full size</string>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="sbxMinHoll">
+   <property name="geometry">
+    <rect>
+     <x>127</x>
+     <y>300</y>
+     <width>71</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>1</number>
+   </property>
+   <property name="maximum">
+    <number>1000</number>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="sbxMaxHoll">
+   <property name="geometry">
+    <rect>
+     <x>237</x>
+     <y>300</y>
+     <width>71</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <number>1</number>
+   </property>
+   <property name="maximum">
+    <number>1000</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>142</x>
+     <y>270</y>
+     <width>41</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>min</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>270</y>
+     <width>41</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>max</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>300</y>
+     <width>81</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Holl size :</string>
    </property>
   </widget>
  </widget>

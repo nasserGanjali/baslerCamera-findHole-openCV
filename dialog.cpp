@@ -16,6 +16,8 @@ Dialog::Dialog(QWidget *parent, MainWindow *mainwindow) :
     ui->scrObjectThr->setValue(Main->objectThr);
     ui->lblObjectThr->setText(QString::number(Main->objectThr));
     ui->cbxShowFullSize->setChecked(Main->showFullSizeImage);
+    ui->sbxMaxHoll->setValue(Main->maxHollSize);
+    ui->sbxMinHoll->setValue(Main->minHollSize);
 
     ui->rbnCameraMode->setChecked(!Main->isTriggeMode);
 //    ui->rbnHoll->setChecked(Main->isHollFinding);
@@ -33,7 +35,8 @@ void Dialog::on_brnOK_clicked()
     Main->CV_upperb = ui->ScrMax->value();
     Main->CV_kernelGain = ui->scrKernel->value();
     Main->objectThr = ui->scrObjectThr->value();
-
+    Main->maxHollSize = ui->sbxMaxHoll->value();
+    Main->minHollSize = ui->sbxMinHoll->value();
     if(ui->rbnCameraMode->isChecked())
         Main->isTriggeMode = false;
     else
@@ -83,7 +86,8 @@ void Dialog::on_brnApply_clicked()
     Main->CV_upperb = ui->ScrMax->value();
     Main->CV_kernelGain = ui->scrKernel->value();
     Main->objectThr = ui->scrObjectThr->value();
-
+    Main->maxHollSize = ui->sbxMaxHoll->value();
+    Main->minHollSize = ui->sbxMinHoll->value();
     if(ui->rbnCameraMode->isChecked())
         Main->isTriggeMode = false;
     else

@@ -18,6 +18,7 @@
 #include <fstream>
 #include <QThread>
 #include <QTime>
+#include <QCloseEvent>
 
 #include "basler.h"
 #include "dialog.h"
@@ -48,6 +49,8 @@ public:
     int CV_kernelGain;
     int objectThr;
     int triggerTimeout;
+    int appClosed;
+    int minHollSize,maxHollSize;
     bool isTriggeMode;
 //    bool isHollFinding;
     bool ShowOriginalImage;
@@ -71,13 +74,14 @@ private:
     char *buffer[10];
     char *bufferCircle[10];
     int circleSize[10];
+    int defectProdocts,totalProdocts;
     int indexBuffer;
-    void findDiameter(char *input, int index);
+    bool findDiameter(char *input, int index);
     void Algorithm(int index);
 
 private slots:
     void updateGraphicView();
-
+    void closeEvent(QCloseEvent *event);
     void on_pushButton_clicked();
     void on_btnTestGPIO_clicked();
 };

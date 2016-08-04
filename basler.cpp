@@ -288,7 +288,7 @@ int basler::startTriggerMode()
             }
             else
             {
-                if(Main->isTriggeMode)
+                if(Main->isTriggeMode && !Main->appClosed)
                 {
                     cout << "t"<<endl;
                     continue;
