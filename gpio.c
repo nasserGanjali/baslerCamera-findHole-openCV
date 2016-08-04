@@ -136,9 +136,14 @@ int GPIO_start()
     }*/
 
     // close Linux I2C device
+    return 1;
+}
+
+int closeGPIO()
+{
     i2cClose();
 
-    return 0;
+    return 1;
 }
 
 int getGPIO()
@@ -162,10 +167,30 @@ void setGPIO(int value)
     pca9555SetOutput(value);
 }
 
+int pcaTest ;
+void testTrigge()
+{
+    pcaTest = 1;
+    while(pcaTest)
+    {
+        pca9555SetOutput(1);
+        usleep(10000);
+        pca9555SetOutput(0);
+        usleep(500000);
+    }
+}
 
+void stopTriggeTest(){
+    pcaTest = 0;
+}
 
-
-
+void singleShot()
+{
+    pca9555SetOutput(1);
+    usleep(5000);
+    pca9555SetOutput(0);
+    printf("singleShot !!! \n");
+}
 
 
 

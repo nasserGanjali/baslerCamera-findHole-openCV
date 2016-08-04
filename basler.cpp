@@ -3,12 +3,13 @@
 basler::basler(MainWindow *mainwindow)
 {
     Main = mainwindow;
+    PylonInitialize();
 }
 
 bool basler::connect()
 {
     // Before using any pylon methods, the pylon runtime must be initialized.
-    PylonInitialize();
+
 
     try
     {
@@ -32,6 +33,17 @@ bool basler::connect()
 
     return true;
 
+}
+
+void basler::closeAllCameras()
+{
+    if(camera != NULL)
+        if(camera->IsOpen())
+            camera->Close();
+
+    if(Camera != NULL)
+        if(Camera->IsOpen())
+            Camera->Close();
 }
 
 void basler::gpio(bool value)
@@ -143,6 +155,43 @@ int basler::start()
     return exitCode;
 }
 
+int basler::initTrigger()
+{
+
+    //    PylonInitialize();
+    // Get the transport layer factory.
+    CTlFactory& TlFactory = CTlFactory::GetInstance();
+
+    // Create the transport layer object needed to enumerate or
+    // create a camera object of type Camera_t::DeviceClass().
+    ITransportLayer *pTl = TlFactory.CreateTl(Camera_t::DeviceClass());
+
+    // Exit the application if the specific transport layer is not available.
+    if (! pTl)
+    {
+        cerr << "Failed to create transport layer!" << endl;
+        //pressEnterToExit();
+        return 1;
+    }
+
+    // Get all attached cameras and exit the application if no camera is found.
+    DeviceInfoList_t devices;
+    if (0 == pTl->EnumerateDevices(devices))
+    {
+        cerr << "No camera present!" << endl;
+        //pressEnterToExit();
+        return 1;
+    }
+
+    // Create the camera object of the first available camera.
+    // The camera object is used to set and get all available
+    // camera features.
+    Camera = new Camera_t(pTl->CreateDevice(devices[0]));
+
+    // Open the camera.
+    Camera->Open();
+
+}
 
 int basler::startTriggerMode()
 {
@@ -151,62 +200,28 @@ int basler::startTriggerMode()
     int result = 0;
     try
     {
-        // Get the transport layer factory.
-        CTlFactory& TlFactory = CTlFactory::GetInstance();
-
-        // Create the transport layer object needed to enumerate or
-        // create a camera object of type Camera_t::DeviceClass().
-        ITransportLayer *pTl = TlFactory.CreateTl(Camera_t::DeviceClass());
-
-        // Exit the application if the specific transport layer is not available.
-        if (! pTl)
-        {
-            cerr << "Failed to create transport layer!" << endl;
-            //pressEnterToExit();
-            return 1;
-        }
-
-        // Get all attached cameras and exit the application if no camera is found.
-        DeviceInfoList_t devices;
-        if (0 == pTl->EnumerateDevices(devices))
-        {
-            cerr << "No camera present!" << endl;
-            //pressEnterToExit();
-            return 1;
-        }
-
-        // Create the camera object of the first available camera.
-        // The camera object is used to set and get all available
-        // camera features.
-        Camera_t Camera(pTl->CreateDevice(devices[0]));
-
-        // Open the camera.
-        Camera.Open();
-
         // Get the first stream grabber object of the selected camera.
-        Camera_t::StreamGrabber_t StreamGrabber(Camera.GetStreamGrabber(0));
+        Camera_t::StreamGrabber_t StreamGrabber(Camera->GetStreamGrabber(0));
 
         // Open the stream grabber.
         StreamGrabber.Open();
 
-        CFeaturePersistence::Load( "NodeMap.pfs", Camera.GetNodeMap(), true );
-
-        Camera.AcquisitionMode.SetValue(AcquisitionMode_SingleFrame);
-        Camera.TriggerSelector.SetValue( TriggerSelector_AcquisitionStart);
-        Camera.TriggerMode.SetValue( TriggerMode_On);
-        Camera.TriggerSource.SetValue(TriggerSource_Line1);
+        Camera->AcquisitionMode.SetValue(AcquisitionMode_SingleFrame);
+        Camera->TriggerSelector.SetValue( TriggerSelector_AcquisitionStart);
+        Camera->TriggerMode.SetValue( TriggerMode_On);
+        Camera->TriggerSource.SetValue(TriggerSource_Line1);
         //	Camera.TriggerActivasion.SetValue(TriggerActivation_RisingEdge);
-        Camera.AcquisitionFrameCount.SetValue(1);
+        Camera->AcquisitionFrameCount.SetValue(10);
 
         // Create an image buffer.
-        const size_t ImageSize = (size_t)(Camera.PayloadSize.GetValue());
+        const size_t ImageSize = (size_t)(Camera->PayloadSize.GetValue());
         uint8_t * const pBuffer = new uint8_t[ ImageSize ];
 
         // We won't use image buffers greater than ImageSize.
         StreamGrabber.MaxBufferSize.SetValue(ImageSize);
 
         // We won't queue more than one image buffer at a time.
-        StreamGrabber.MaxNumBuffer.SetValue(1);
+        StreamGrabber.MaxNumBuffer.SetValue(100);
 
         // Allocate all resources for grabbing. Critical parameters like image
         // size now must not be changed until FinishGrab() is called.
@@ -222,7 +237,7 @@ int basler::startTriggerMode()
 
         // Let the camera acquire one single image ( Acquisition mode equals
         // SingleFrame! ).
-        Camera.AcquisitionStart.Execute();
+        Camera->AcquisitionStart.Execute();
 
         // Wait for the grabbed image with a timeout of 3 seconds.
 
@@ -242,8 +257,10 @@ int basler::startTriggerMode()
                     cout << "Size: " << Result.GetSizeX() << " x " << Result.GetSizeY() << endl;
 
                     memcpy(globalImageBuffer,(uint8_t *) Result.Buffer(),WIDTH*HEIGHT);
-                    result = 1;
-                     wait = false;
+                    //Result.
+                    result = 0;
+                    wait = false;
+                    //StreamGrabber.
                     // Get the pointer to the image buffer.
                     //const uint8_t *pImageBuffer = (uint8_t *) Result.Buffer();
                     //cout << "Gray value of first pixel: " << (uint32_t) pImageBuffer[0]
@@ -254,21 +271,28 @@ int basler::startTriggerMode()
                 }
                 else
                 {
+                    if(Result.GetErrorCode() == 3774873620)
+                        result = -2;
+                    else
+                         result = -1;
                     // Error handling
                     cerr << "No image acquired!" << endl;
-                    cerr << "Error code : 0x" << hex
+                    cerr << "Error code : 0x" //<< hex
                          << Result.GetErrorCode() << endl;
                     cerr << "Error description : "
                          << Result.GetErrorDescription() << endl;
 
-                    result = -1;
+
                     wait = false;
                 }
             }
             else
             {
                 if(Main->isTriggeMode)
+                {
+                    cout << "t"<<endl;
                     continue;
+                }
                 // Timeout
                 cerr << "Timeout occurred!" << endl;
 
@@ -278,8 +302,8 @@ int basler::startTriggerMode()
 
                 // Get all buffers back.
                 for (GrabResult r; StreamGrabber.RetrieveResult(r););
-
-                result = -1;
+                Camera->Close();
+                result = 1;
                 wait = false;
             }
         }
@@ -296,17 +320,18 @@ int basler::startTriggerMode()
         StreamGrabber.Close();
 
         // Close camera.
-        Camera.Close();
+        //        Camera->Close();
 
 
         // Free memory of image buffer.
         delete[] pBuffer;
+        return result;
 
     }
     catch (const GenericException &e)
     {
         // Error handling
-        cerr << "An exception occurred!" << endl
+        cerr << "An exception occurred3" << endl
              << e.GetDescription() << endl;
 
         result = -1;

@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     indexBuffer = 0;
     startCapture = 0;
     isTriggeMode = 1;
-//    isHollFinding = 1;
+    //    isHollFinding = 1;
     ShowOriginalImage = 0;
     showFullSizeImage = 0;
     objectThr = 220;
@@ -19,10 +19,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //camera
     camera = new basler(this);
-    if(camera->connect())
-        qDebug()<<"camera is connected";
-    else
-        qDebug()<<"cannot connect to camera !!!";
+    camera->loadConfig();
+
+    if(!isTriggeMode)
+    {
+        if(camera->connect())
+            qDebug()<<"camera is connected";
+        else
+            qDebug()<<"cannot connect to camera !!!";
+    }else
+    {
+        camera->initTrigger();
+    }
 
     scene = new QGraphicsScene();
     ui->graphicsView->setScene(scene);
@@ -43,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
     dialogConfig = new Dialog(0,this);
     QtConcurrent::run(this,&MainWindow::getFrameWhile);
 
+    GPIO_start();
 }
 
 MainWindow::~MainWindow()
@@ -58,17 +67,42 @@ void MainWindow::getFrameWhile()
 
 void MainWindow::getFrame()
 {
-    if(isTriggeMode)
-        camera->startTriggerMode();
+    bool mode = isTriggeMode;
+    int res = 0;
+    if(mode)
+    {
+        if(!camera->Camera->IsOpen())
+        {
+            camera->closeAllCameras();
+            camera->initTrigger();
+        }
+        triggerTimeout = 0;
+        res = camera->startTriggerMode();
+        if(res == 0 || res == 1)
+            triggerTimeout = res;
+        else if(res == -2)
+            singleShot();
+    }
     else
+    {
+        if(camera->camera == NULL)
+        {
+            camera->closeAllCameras();
+            if(camera->connect())
+                qDebug()<<"camera is connected";
+            else
+                qDebug()<<"cannot connect to camera !!!";
+        }
+
         camera->start();
-//    return;
+    }
+
     startCapture = 1;
 
     int index = indexBuffer;
     memcpy(buffer[index], (uchar*)camera->globalImageBuffer, WIDTH * HEIGHT);
 
-    if(isTriggeMode)
+    if(mode && !triggerTimeout)
     {
         // int index = (indexBuffer == 0) ? 9 : indexBuffer - 1;
         char test[800*600];
@@ -80,12 +114,12 @@ void MainWindow::getFrame()
 
     indexBuffer = (index + 1) % 10;
 
-//    if(!isTriggeMode)
-//    {
-//        QEventLoop loop;
-//        QTimer::singleShot(500,&loop,SLOT(quit()));
-//        loop.exec();
-//    }
+    //    if(!isTriggeMode)
+    //    {
+    //        QEventLoop loop;
+    //        QTimer::singleShot(500,&loop,SLOT(quit()));
+    //        loop.exec();
+    //    }
 
 }
 
@@ -131,6 +165,8 @@ void MainWindow::findHoles(int index)
     }
     else
     {
+        try
+        {
         char *tmpBuffer = (char *)malloc(circleSize[index] * circleSize[index]);
         memcpy(tmpBuffer,bufferCircle[index],circleSize[index] * circleSize[index]);
         cv::Mat img(circleSize[index],circleSize[index],CV_8U,tmpBuffer);
@@ -166,6 +202,10 @@ void MainWindow::findHoles(int index)
 
         if(!ShowOriginalImage)
             memcpy(bufferCircle[index], drawing.data,circleSize[index] * circleSize[index]);
+        }catch(const GenericException &e)
+        {
+            qDebug()<<"1";
+        }
     }
 }
 
@@ -232,6 +272,14 @@ void MainWindow::findDiameter(char *input,int index)
         }
 
     int k = ((0.353553 * ( Rj - Uj) * 2 - 5));
+    if(k < 0)
+    {
+        k = 10;
+        Rj = HEIGHT / 2;
+        Ri = WIDTH / 2;
+        Ui = WIDTH / 2 - 10;
+        Uj = HEIGHT / -10;
+    }
     if(k % 2 != 0)
         k --;
     //    qDebug()<<"k = "<<k;
@@ -245,5 +293,21 @@ void MainWindow::findDiameter(char *input,int index)
             I = (i - Ui+k); J = (j - Rj+k);
             bufferCircle[index][I + J * k*2] = input[i + j * 800];
         }
+
+}
+
+void MainWindow::on_btnTestGPIO_clicked()
+{
+    static bool first = true;
+    if(first)
+    {
+        first = false;
+        QtConcurrent::run(testTrigge);
+    }
+    else
+    {
+        stopTriggeTest();
+        first = true;
+    }
 
 }

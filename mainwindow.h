@@ -24,6 +24,11 @@
 #define WIDTH 800
 #define HEIGHT 600
 
+extern "C" void testTrigge();
+extern "C" void stopTriggeTest();
+extern "C" int GPIO_start();
+extern "C" void singleShot();
+
 using namespace cv;
 
 class Dialog;
@@ -41,6 +46,7 @@ public:
     int CV_lowerd , CV_upperb;
     int CV_kernelGain;
     int objectThr;
+    int triggerTimeout;
     bool isTriggeMode;
 //    bool isHollFinding;
     bool ShowOriginalImage;
@@ -71,6 +77,7 @@ private slots:
     void updateGraphicView();
 
     void on_pushButton_clicked();
+    void on_btnTestGPIO_clicked();
 };
 
 #endif // MAINWINDOW_H

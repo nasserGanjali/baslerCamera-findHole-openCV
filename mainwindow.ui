@@ -73,6 +73,19 @@
      <string>config</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="btnTestGPIO">
+    <property name="geometry">
+     <rect>
+      <x>910</x>
+      <y>500</y>
+      <width>93</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>gpio</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

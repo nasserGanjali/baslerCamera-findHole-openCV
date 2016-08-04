@@ -11,7 +11,9 @@
 #define HEIGHT 600
 
 #include "mainwindow.h"
+#include <QDebug>
 
+extern "C" void singleShot();
 class MainWindow;
 
 // Namespace for using pylon objects.
@@ -29,6 +31,7 @@ using namespace std;
 class basler
 {
 public:
+    void closeAllCameras();
     basler(MainWindow *mainwindow);
     MainWindow *Main;
     int start();
@@ -42,6 +45,8 @@ public:
     // Number of images to be grabbed.
     static const uint32_t c_countOfImagesToGrab = 1;
     void gpio(bool value);
+    int initTrigger();
+    Camera_t *Camera ;
 };
 
 #endif // BASLER_H
