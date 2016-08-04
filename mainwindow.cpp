@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //    isHollFinding = 1;
     ShowOriginalImage = 0;
     showFullSizeImage = 0;
+    imgUpdateView = NULL;
     objectThr = 220;
     CV_lowerd = 200; CV_upperb = 255;
     CV_kernelGain = 15;
@@ -62,7 +63,10 @@ MainWindow::~MainWindow()
 void MainWindow::getFrameWhile()
 {
     while(1)
+    {
+//        qDebug()<<"time :"<<QTime::currentTime().toString();
         getFrame();
+    }
 }
 
 void MainWindow::getFrame()
@@ -105,14 +109,10 @@ void MainWindow::getFrame()
     if(mode && !triggerTimeout)
     {
         // int index = (indexBuffer == 0) ? 9 : indexBuffer - 1;
-        char test[800*600];
-        memcpy(test,buffer[index],800*600);
-        findDiameter(test,index);
-        findHoles(index);
-
+         QtConcurrent::run(this,&MainWindow::Algorithm,index);
     }
-
-    indexBuffer = (index + 1) % 10;
+    else
+        indexBuffer = (index + 1) % 10;
 
     //    if(!isTriggeMode)
     //    {
@@ -121,6 +121,15 @@ void MainWindow::getFrame()
     //        loop.exec();
     //    }
 
+}
+
+void MainWindow::Algorithm(int index)
+{
+    char test[800*600];
+    memcpy(test,buffer[index],800*600);
+    findDiameter(test,index);
+    findHoles(index);
+    indexBuffer = (index + 1) % 10;
 }
 
 void MainWindow::findHoles(int index)
@@ -202,6 +211,7 @@ void MainWindow::findHoles(int index)
 
         if(!ShowOriginalImage)
             memcpy(bufferCircle[index], drawing.data,circleSize[index] * circleSize[index]);
+        free(tmpBuffer);
         }catch(const GenericException &e)
         {
             qDebug()<<"1";
@@ -224,6 +234,9 @@ void MainWindow::updateGraphicView()
 
     lastBufferIndex = indexBuffer - 1;
     ui->graphicsView->scene()->clear();
+//    ui->graphicsView->scene()->
+    if(imgUpdateView != NULL)
+        free(imgUpdateView);
 
     if(showFullSizeImage || (!isTriggeMode))
         imgUpdateView = new QImage((uchar*)buffer[index], WIDTH, HEIGHT, QImage::Format_Indexed8);
@@ -259,7 +272,7 @@ void MainWindow::findDiameter(char *input,int index)
 
 
     for(int i = 799; i > 300; i--)
-        for(int j = 10;j < 400; j++)
+        for(int j = 10;j < 500; j++)
         {
             int k = (uchar)input[i + 800 * j];
             if(k < objectThr)
@@ -271,7 +284,7 @@ void MainWindow::findDiameter(char *input,int index)
             }
         }
 
-    int k = ((0.353553 * ( Rj - Uj) * 2 - 5));
+    int k = ((0.353553 * ( Rj - Uj) * 2 - 10));
     if(k < 0)
     {
         k = 10;

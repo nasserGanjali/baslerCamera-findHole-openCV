@@ -17,6 +17,7 @@
 #include <iostream>
 #include <fstream>
 #include <QThread>
+#include <QTime>
 
 #include "basler.h"
 #include "dialog.h"
@@ -72,6 +73,7 @@ private:
     int circleSize[10];
     int indexBuffer;
     void findDiameter(char *input, int index);
+    void Algorithm(int index);
 
 private slots:
     void updateGraphicView();
