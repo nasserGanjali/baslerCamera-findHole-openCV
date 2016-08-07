@@ -28,7 +28,7 @@
     <property name="geometry">
      <rect>
       <x>840</x>
-      <y>90</y>
+      <y>30</y>
       <width>81</width>
       <height>41</height>
      </rect>
@@ -46,7 +46,7 @@
     <property name="geometry">
      <rect>
       <x>840</x>
-      <y>180</y>
+      <y>120</y>
       <width>111</width>
       <height>41</height>
      </rect>
@@ -63,8 +63,8 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>920</x>
-      <y>440</y>
+      <x>950</x>
+      <y>530</y>
       <width>93</width>
       <height>27</height>
      </rect>
@@ -76,8 +76,8 @@
    <widget class="QPushButton" name="btnTestGPIO">
     <property name="geometry">
      <rect>
-      <x>920</x>
-      <y>390</y>
+      <x>900</x>
+      <y>490</y>
       <width>93</width>
       <height>27</height>
      </rect>
@@ -90,7 +90,7 @@
     <property name="geometry">
      <rect>
       <x>960</x>
-      <y>90</y>
+      <y>30</y>
       <width>81</width>
       <height>41</height>
      </rect>
@@ -108,7 +108,7 @@
     <property name="geometry">
      <rect>
       <x>960</x>
-      <y>180</y>
+      <y>120</y>
       <width>111</width>
       <height>41</height>
      </rect>
@@ -125,14 +125,130 @@
    <widget class="QPushButton" name="btnTestCamera">
     <property name="geometry">
      <rect>
-      <x>920</x>
-      <y>490</y>
+      <x>950</x>
+      <y>570</y>
       <width>93</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text">
      <string>Test Camera</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnTestGPIO_2">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>530</y>
+      <width>93</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>save</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnTestGPIO_3">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>570</y>
+      <width>93</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>load</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblHistory">
+    <property name="geometry">
+     <rect>
+      <x>840</x>
+      <y>210</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>history :</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>350</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Defect :</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>280</y>
+      <width>81</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Total :</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblHistoryTotal">
+    <property name="geometry">
+     <rect>
+      <x>970</x>
+      <y>280</y>
+      <width>81</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblHistoryDefect">
+    <property name="geometry">
+     <rect>
+      <x>970</x>
+      <y>350</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>0</string>
     </property>
    </widget>
   </widget>

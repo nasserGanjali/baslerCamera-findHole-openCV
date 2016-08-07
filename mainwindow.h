@@ -8,6 +8,8 @@
 #include <QPixmap>
 #include <QtConcurrentRun>
 #include <QTimer>
+#include <QFile>
+#include <QDir>
 #include "dialogtestcamera.h"
 
 #include "opencv2/imgproc/imgproc.hpp"
@@ -60,6 +62,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
      basler *camera;
     void getFrame();
+    bool saveToHistory();
+    bool loadHistory();
     ~MainWindow();
 
 
@@ -77,7 +81,7 @@ private:
     char *buffer[10];
     char *bufferCircle[10];
     int circleSize[10];
-    int defectProdocts,totalProdocts;
+    int defectProdocts,totalProdocts,historyTotalProdocts,historyDefectProdocts;
     int indexBuffer;
     bool findDiameter(char *input, int index);
     void Algorithm(int index);
@@ -88,6 +92,8 @@ private slots:
     void on_pushButton_clicked();
     void on_btnTestGPIO_clicked();
     void on_btnTestCamera_clicked();
+    void on_btnTestGPIO_2_clicked();
+    void on_btnTestGPIO_3_clicked();
 };
 
 #endif // MAINWINDOW_H

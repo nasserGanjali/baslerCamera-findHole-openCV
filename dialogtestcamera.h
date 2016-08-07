@@ -30,6 +30,8 @@ private slots:
 
 //    void on_btnCheckCamera_clicked();
 
+    void on_btnOkey_clicked();
+
 private:
     MainWindow *Main;
     Ui::dialogTestCamera *ui;

@@ -18,6 +18,8 @@ MainWindow::MainWindow(QWidget *parent) :
     minHollSize = 17;
     defectProdocts = 0;
     totalProdocts = 0;
+    historyDefectProdocts = 0;
+    historyTotalProdocts = 0;
     imgUpdateView = NULL;
     objectThr = 220;
     CV_lowerd = 200; CV_upperb = 255;
@@ -60,12 +62,16 @@ MainWindow::MainWindow(QWidget *parent) :
     QtConcurrent::run(this,&MainWindow::getFrameWhile);
 
     GPIO_start();
+
+    loadHistory();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+
 
 void MainWindow::getFrameWhile()
 {
@@ -284,6 +290,8 @@ void MainWindow::updateGraphicView()
 
     ui->lblDefect->setText(QString::number(defectProdocts));
     ui->lblTotal->setText(QString::number(totalProdocts));
+    ui->lblHistoryDefect->setText(QString::number(historyDefectProdocts));
+    ui->lblHistoryTotal->setText(QString::number(historyTotalProdocts));
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -375,5 +383,71 @@ void MainWindow::closeEvent(QCloseEvent *event)
     appClosed = 1;
     stopTriggeTest();
     camera->closeAllCameras();
+    saveToHistory();
     event->accept();
+}
+
+
+void MainWindow::on_btnTestGPIO_2_clicked()
+{
+    saveToHistory();
+}
+
+
+void MainWindow::on_btnTestGPIO_3_clicked()
+{
+    loadHistory();
+}
+
+bool MainWindow::saveToHistory()
+{
+    QString today = QDateTime::currentDateTime().toString("yyyyMMdd");
+    QString now = QDateTime::currentDateTime().toString("hh-mm-ss");
+    if(! QDir("history").exists())
+        QDir().mkdir("history");
+
+    if(! (QDir("history/" + today).exists()))
+        QDir().mkdir("history/" + today);
+    QString t = ("echo '" + QString::number(totalProdocts) + "_" + QString::number(defectProdocts) + "' >" + "history/" + today + "/" + today+ "_" + now);
+    system(t.toUtf8());
+
+}
+
+bool MainWindow::loadHistory()
+{
+    int total = 0,defect = 0;
+    QString today = QDateTime::currentDateTime().toString("yyyyMMdd");
+
+    if(! QDir("history").exists())
+        total = defect = 0;
+    else if(! (QDir("history/" + today).exists()))
+        total = defect = 0;
+    else
+    {
+        QDir history("history/" + today);//qDebug()<<"123";
+        QStringList list = history.entryList();
+        foreach (QString fileName, list) {
+            fileName = "history/" + today + "/" + fileName;
+            QFile file(fileName);
+            file.open(QFile::ReadOnly);
+            QByteArray out = file.readAll();
+            QString test = out.begin();
+
+            QStringList values = test.split("_");
+            if(values.count() == 2)
+            {
+                QString t = values.first();
+                values.pop_front();
+                QString d = values.first();
+                total += (t.toInt());
+                defect += d.toInt();
+            }
+        }
+    }
+    historyDefectProdocts = defect;
+    historyTotalProdocts = total;
+
+    ui->lblHistoryDefect->setText(QString::number(historyDefectProdocts));
+    ui->lblHistoryTotal->setText(QString::number(historyTotalProdocts));
+
 }

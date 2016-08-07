@@ -59,3 +59,8 @@ void dialogTestCamera::on_btnConnect_clicked()
 //         msg->setText("camera is not connected !!!");
 //    msg->show();
 //}
+
+void dialogTestCamera::on_btnOkey_clicked()
+{
+    this->close();
+}
