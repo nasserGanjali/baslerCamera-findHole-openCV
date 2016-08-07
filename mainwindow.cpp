@@ -23,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
     CV_lowerd = 200; CV_upperb = 255;
     CV_kernelGain = 15;
 
+    dialogCheckCamera = new dialogTestCamera(0,this,camera);
+
     //camera
     camera = new basler(this);
     camera->loadConfig();
@@ -72,6 +74,11 @@ void MainWindow::getFrameWhile()
         //        qDebug()<<"time :"<<QTime::currentTime().toString();
         getFrame();
     }
+}
+
+void MainWindow::on_btnTestCamera_clicked()
+{
+    dialogCheckCamera->show();
 }
 
 void MainWindow::getFrame()

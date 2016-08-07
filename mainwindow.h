@@ -8,6 +8,7 @@
 #include <QPixmap>
 #include <QtConcurrentRun>
 #include <QTimer>
+#include "dialogtestcamera.h"
 
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
@@ -39,6 +40,7 @@ class MainWindow;
 }
 
 class basler;
+class dialogTestCamera;
 
 class MainWindow : public QMainWindow
 {
@@ -56,6 +58,7 @@ public:
     bool ShowOriginalImage;
     bool showFullSizeImage;
     explicit MainWindow(QWidget *parent = 0);
+     basler *camera;
     void getFrame();
     ~MainWindow();
 
@@ -65,10 +68,10 @@ private:
     QTimer tmrGraphicView;
     void getFrameWhile();
     QGraphicsScene *scene;
-    basler *camera;
     bool startCapture;
 
     Dialog *dialogConfig;
+    dialogTestCamera *dialogCheckCamera;
     void findHoles(int index);
     QImage *imgUpdateView;
     char *buffer[10];
@@ -84,6 +87,9 @@ private slots:
     void closeEvent(QCloseEvent *event);
     void on_pushButton_clicked();
     void on_btnTestGPIO_clicked();
+    void on_btnTestCamera_clicked();
 };
 
 #endif // MAINWINDOW_H
+
+

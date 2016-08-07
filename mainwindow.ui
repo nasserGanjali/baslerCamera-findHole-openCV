@@ -63,8 +63,8 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>910</x>
-      <y>550</y>
+      <x>920</x>
+      <y>440</y>
       <width>93</width>
       <height>27</height>
      </rect>
@@ -76,8 +76,8 @@
    <widget class="QPushButton" name="btnTestGPIO">
     <property name="geometry">
      <rect>
-      <x>910</x>
-      <y>500</y>
+      <x>920</x>
+      <y>390</y>
       <width>93</width>
       <height>27</height>
      </rect>
@@ -120,6 +120,19 @@
     </property>
     <property name="text">
      <string>0</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnTestCamera">
+    <property name="geometry">
+     <rect>
+      <x>920</x>
+      <y>490</y>
+      <width>93</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Test Camera</string>
     </property>
    </widget>
   </widget>

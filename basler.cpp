@@ -37,13 +37,27 @@ bool basler::connect()
 
 void basler::closeAllCameras()
 {
+    try
+    {
     if(camera != NULL)
         if(camera->IsOpen())
             camera->Close();
+    }
+    catch(const GenericException &e)
+    {
+        qDebug()<<e.GetDescription();
+    }
 
+    try
+    {
     if(Camera != NULL)
         if(Camera->IsOpen())
             Camera->Close();
+    }
+    catch(const GenericException &e)
+    {
+
+    }
 }
 
 void basler::gpio(bool value)

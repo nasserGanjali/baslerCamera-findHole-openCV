@@ -16,7 +16,8 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     basler.cpp \
     dialog.cpp \
-    gpio.c
+    gpio.c \
+    dialogtestcamera.cpp
 
 INCLUDEPATH += /opt/pylon5/include
 LIBS += -L/opt/pylon5/lib -Wl,-E -lpylonbase -lpylonutility -lGenApi_gcc_v3_0_Basler_pylon_v5_0 -lGCBase_gcc_v3_0_Basler_pylon_v5_0 -Wl,--enable-new-dtags -Wl,-rpath,/opt/pylon5/lib
@@ -26,7 +27,9 @@ LIBS += -LC:/usr/lib/arm-linux-gnueabihf -lopencv_calib3d -lopencv_contrib -lope
 
 HEADERS  += mainwindow.h \
     basler.h \
-    dialog.h
+    dialog.h \
+    dialogtestcamera.h
 
 FORMS    += mainwindow.ui \
-    dialog.ui
+    dialog.ui \
+    dialogtestcamera.ui
