@@ -12,7 +12,7 @@
 
 // I2C Linux device handle
 int g_i2cFile;
-
+int isGPIOClosed = 0;
 // open the Linux device
 void i2cOpen()
 {
@@ -99,8 +99,8 @@ int GPIO_start()
     // set address of the PCA9555
     i2cSetAddress(0x20);
 
-    // set input for IO pin 15, rest output
-    pca9555SetInputDirection(1 << 15);
+    // set input for IO pin 3,4
+    pca9555SetInputDirection(12);
 
     // LED animation loop
     /*while (1) {
@@ -145,26 +145,40 @@ int closeGPIO()
 
     return 1;
 }
-
+/*
+ *  pin 1 is LED            (Out)
+ *  pin 2 is Camera Trigge  (Out)
+ *  pin 3 is metal detector (IN)
+ *  pin 4 is wire           (IN)
+ */
 int getGPIO()
 {
-    while(1)
+    while( !isGPIOClosed )
     {
-        if (pca9555GetInput() & 0x8000)
+        usleep(50000);
+        u_int16_t input = pca9555GetInput();
+//        printf("%d\n",input);
+        if (!(input & 0x8))
         {
-            continue;
+//            printf("4\n");
+            return 4;
+        }else if(!(input & 0x4))
+        {
+//            printf("3\n");
+            return 3;
         }
         else
         {
-            return 1;
+            continue;
         }
-        usleep(10000);
     }
 }
 
 void setGPIO(int value)
 {
     pca9555SetOutput(value);
+    usleep(100000);
+    pca9555SetOutput(0);
 }
 
 int pcaTest ;
@@ -173,10 +187,10 @@ void testTrigge()
     pcaTest = 1;
     while(pcaTest)
     {
-        pca9555SetOutput(1);
+        pca9555SetOutput(2);
         usleep(10000);
         pca9555SetOutput(0);
-        usleep(500000);
+        usleep(300000);
     }
 }
 
@@ -184,9 +198,9 @@ void stopTriggeTest(){
     pcaTest = 0;
 }
 
-void singleShot()
+void singleShot(int value)
 {
-    pca9555SetOutput(1);
+    pca9555SetOutput(value);
     usleep(5000);
     pca9555SetOutput(0);
     printf("singleShot !!! \n");

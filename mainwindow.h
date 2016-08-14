@@ -32,7 +32,10 @@
 extern "C" void testTrigge();
 extern "C" void stopTriggeTest();
 extern "C" int GPIO_start();
-extern "C" void singleShot();
+extern "C" void singleShot(int value);
+extern "C" int getGPIO();
+extern "C" int isGPIOClosed;
+extern "C" void setGPIO(int value);
 
 using namespace cv;
 
@@ -64,6 +67,7 @@ public:
     void getFrame();
     bool saveToHistory();
     bool loadHistory();
+    void getInput();
     ~MainWindow();
 
 
@@ -82,6 +86,7 @@ private:
     char *bufferCircle[10];
     int circleSize[10];
     int defectProdocts,totalProdocts,historyTotalProdocts,historyDefectProdocts;
+    int lastProdoctIsDefect;
     int indexBuffer;
     bool findDiameter(char *input, int index);
     void Algorithm(int index);

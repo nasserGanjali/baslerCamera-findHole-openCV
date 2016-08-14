@@ -13,7 +13,7 @@
 #include "mainwindow.h"
 #include <QDebug>
 
-extern "C" void singleShot();
+extern "C" void singleShot(int value);
 class MainWindow;
 
 // Namespace for using pylon objects.

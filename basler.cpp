@@ -249,7 +249,7 @@ int basler::startTriggerMode()
         // Put the buffer into the grab queue for grabbing.
         StreamGrabber.QueueBuffer(hBuffer, NULL);
 
-        // Let the camera acquire one single image ( Acquisition mode equals
+        // Let the camera acquire one  image ( Acquisition mode equals
         // SingleFrame! ).
         Camera->AcquisitionStart.Execute();
 

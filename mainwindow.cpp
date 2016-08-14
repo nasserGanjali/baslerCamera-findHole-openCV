@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     startCapture = 0;
     isTriggeMode = 1;
     appClosed = 0;
+    lastProdoctIsDefect = 0;
     //    isHollFinding = 1;
     ShowOriginalImage = 0;
     showFullSizeImage = 0;
@@ -57,11 +58,15 @@ MainWindow::MainWindow(QWidget *parent) :
     tmrGraphicView.setInterval(500);
     connect(&tmrGraphicView,SIGNAL(timeout()),SLOT(updateGraphicView()));
     tmrGraphicView.start();
-
+//qDebug()<<"asdasd";
     dialogConfig = new Dialog(0,this);
     QtConcurrent::run(this,&MainWindow::getFrameWhile);
-
+//qDebug()<<"asdasd";
     GPIO_start();
+//    getInput();
+    QtConcurrent::run(this,&MainWindow::getInput);
+
+
 
     loadHistory();
 }
@@ -71,7 +76,26 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::getInput()
+{
+    while(!appClosed)
+    {
+        u_int16_t v = getGPIO();
+        qDebug()<<v;
 
+        if(v == 3)
+        {
+            singleShot(2); // a prodoct is detected shot camera trigge
+            continue;
+        }
+
+        if(lastProdoctIsDefect)
+            singleShot(1);
+        else
+            qDebug()<<"is not defect";
+
+    }
+}
 
 void MainWindow::getFrameWhile()
 {
@@ -103,7 +127,11 @@ void MainWindow::getFrame()
         if(res == 0 || res == 1)
             triggerTimeout = res;
         else if(res == -2)
-            singleShot();
+        {
+            stopTriggeTest();
+            singleShot(2);
+            return;
+        }
     }
     else
     {
@@ -196,6 +224,10 @@ void MainWindow::findHoles(int index)
         if(defect)
         {
             defectProdocts ++;
+            lastProdoctIsDefect = 1;
+        }else
+        {
+            lastProdoctIsDefect = 0;
         }
 
         if(!ShowOriginalImage)
@@ -249,6 +281,10 @@ void MainWindow::findHoles(int index)
             if(defect)
             {
                 defectProdocts ++;
+                lastProdoctIsDefect = 1;
+            }else
+            {
+                lastProdoctIsDefect = 0;
             }
 
             if(!ShowOriginalImage)
@@ -381,6 +417,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     qDebug()<<"close";
     appClosed = 1;
+    isGPIOClosed = 1;
     stopTriggeTest();
     camera->closeAllCameras();
     saveToHistory();

@@ -138,7 +138,7 @@
    <widget class="QPushButton" name="btnTestGPIO_2">
     <property name="geometry">
      <rect>
-      <x>850</x>
+      <x>840</x>
       <y>530</y>
       <width>93</width>
       <height>27</height>
@@ -151,7 +151,7 @@
    <widget class="QPushButton" name="btnTestGPIO_3">
     <property name="geometry">
      <rect>
-      <x>850</x>
+      <x>820</x>
       <y>570</y>
       <width>93</width>
       <height>27</height>
