@@ -73,7 +73,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QTimer tmrGraphicView;
+    QTimer tmrGraphicView,tmrSave;
     void getFrameWhile();
     QGraphicsScene *scene;
     bool startCapture;
@@ -90,6 +90,7 @@ private:
     int indexBuffer;
     bool findDiameter(char *input, int index);
     void Algorithm(int index);
+    void addTmpFileToHistory();
 
 private slots:
     void updateGraphicView();
@@ -99,6 +100,7 @@ private slots:
     void on_btnTestCamera_clicked();
     void on_btnTestGPIO_2_clicked();
     void on_btnTestGPIO_3_clicked();
+    void tmrSaveTicked();
 };
 
 #endif // MAINWINDOW_H

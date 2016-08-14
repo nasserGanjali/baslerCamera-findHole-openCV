@@ -58,17 +58,36 @@ MainWindow::MainWindow(QWidget *parent) :
     tmrGraphicView.setInterval(500);
     connect(&tmrGraphicView,SIGNAL(timeout()),SLOT(updateGraphicView()));
     tmrGraphicView.start();
-//qDebug()<<"asdasd";
+
+    tmrSave.setInterval(10000);
+    connect(&tmrSave,SIGNAL(timeout()),SLOT(tmrSaveTicked()));
+    tmrSave.start();
+
+    //qDebug()<<"asdasd";
     dialogConfig = new Dialog(0,this);
     QtConcurrent::run(this,&MainWindow::getFrameWhile);
-//qDebug()<<"asdasd";
+    //qDebug()<<"asdasd";
     GPIO_start();
-//    getInput();
+    //    getInput();
     QtConcurrent::run(this,&MainWindow::getInput);
 
 
 
     loadHistory();
+}
+
+void MainWindow::tmrSaveTicked()
+{
+    QString today = QDateTime::currentDateTime().toString("yyyyMMdd");
+    //    QString now = QDateTime::currentDateTime().toString("hh-mm-ss");
+    if(! QDir("history").exists())
+        QDir().mkdir("history");
+
+    if(! (QDir("history/" + today).exists()))
+        QDir().mkdir("history/" + today);
+    QString t = ("echo '" + QString::number(totalProdocts) + "_" + QString::number(defectProdocts) + "' >" + "history/" + today + "/" + today+ "_tmp");
+    //    qDebug()<<t;
+    system(t.toUtf8());
 }
 
 MainWindow::~MainWindow()
@@ -448,10 +467,14 @@ bool MainWindow::saveToHistory()
     QString t = ("echo '" + QString::number(totalProdocts) + "_" + QString::number(defectProdocts) + "' >" + "history/" + today + "/" + today+ "_" + now);
     system(t.toUtf8());
 
+    // remove tmp file
+    QFile tmp("history/" + today + "/" + today+ "_tmp");
+    tmp.remove();
 }
 
 bool MainWindow::loadHistory()
 {
+    addTmpFileToHistory();
     int total = 0,defect = 0;
     QString today = QDateTime::currentDateTime().toString("yyyyMMdd");
 
@@ -487,4 +510,53 @@ bool MainWindow::loadHistory()
     ui->lblHistoryDefect->setText(QString::number(historyDefectProdocts));
     ui->lblHistoryTotal->setText(QString::number(historyTotalProdocts));
 
+}
+
+void MainWindow::addTmpFileToHistory()
+{
+    int total = 0,defect = 0;
+    QString today = QDateTime::currentDateTime().toString("yyyyMMdd");
+
+    if(! QDir("history").exists())
+        total = defect = 0;
+    else if(! (QDir("history/" + today).exists()))
+        total = defect = 0;
+    else
+    {
+        QDir history("history/" + today);
+        QStringList list = history.entryList();
+        foreach (QString fileName, list) {
+            if(!fileName.contains("tmp"))
+                continue;
+            fileName = "history/" + today + "/" + fileName;
+            QFile file(fileName);
+            file.open(QFile::ReadOnly);
+            QByteArray out = file.readAll();
+            QString test = out.begin();
+
+            QStringList values = test.split("_");
+            if(values.count() == 2)
+            {
+                QString t = values.first();
+                values.pop_front();
+                QString d = values.first();
+                total += (t.toInt());
+                defect += d.toInt();
+            }
+            file.remove();
+        }
+    }
+
+    if(total != 0 || defect != 0)
+    {
+        QString now = QDateTime::currentDateTime().toString("hh-mm-ss");
+        if(! QDir("history").exists())
+            QDir().mkdir("history");
+
+        if(! (QDir("history/" + today).exists()))
+            QDir().mkdir("history/" + today);
+        QString t = ("echo '" + QString::number(total) + "_" + QString::number(defect) + "' >" + "history/" + today + "/" + today+ "_" + now);
+        system(t.toUtf8());
+
+    }
 }

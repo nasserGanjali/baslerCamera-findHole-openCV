@@ -157,14 +157,11 @@ int getGPIO()
     {
         usleep(50000);
         u_int16_t input = pca9555GetInput();
-//        printf("%d\n",input);
         if (!(input & 0x8))
         {
-//            printf("4\n");
             return 4;
         }else if(!(input & 0x4))
         {
-//            printf("3\n");
             return 3;
         }
         else
@@ -201,7 +198,7 @@ void stopTriggeTest(){
 void singleShot(int value)
 {
     pca9555SetOutput(value);
-    usleep(5000);
+    usleep(50000);
     pca9555SetOutput(0);
     printf("singleShot !!! \n");
 }

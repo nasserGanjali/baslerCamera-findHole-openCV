@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1096</width>
-    <height>669</height>
+    <width>1071</width>
+    <height>672</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,7 +46,7 @@
     <property name="geometry">
      <rect>
       <x>840</x>
-      <y>120</y>
+      <y>100</y>
       <width>111</width>
       <height>41</height>
      </rect>
@@ -108,7 +108,7 @@
     <property name="geometry">
      <rect>
       <x>960</x>
-      <y>120</y>
+      <y>100</y>
       <width>111</width>
       <height>41</height>
      </rect>
@@ -151,7 +151,7 @@
    <widget class="QPushButton" name="btnTestGPIO_3">
     <property name="geometry">
      <rect>
-      <x>820</x>
+      <x>840</x>
       <y>570</y>
       <width>93</width>
       <height>27</height>
@@ -165,7 +165,7 @@
     <property name="geometry">
      <rect>
       <x>840</x>
-      <y>210</y>
+      <y>240</y>
       <width>111</width>
       <height>41</height>
      </rect>
@@ -183,7 +183,7 @@
     <property name="geometry">
      <rect>
       <x>850</x>
-      <y>350</y>
+      <y>380</y>
       <width>111</width>
       <height>41</height>
      </rect>
@@ -201,7 +201,7 @@
     <property name="geometry">
      <rect>
       <x>850</x>
-      <y>280</y>
+      <y>310</y>
       <width>81</width>
       <height>41</height>
      </rect>
@@ -219,7 +219,7 @@
     <property name="geometry">
      <rect>
       <x>970</x>
-      <y>280</y>
+      <y>310</y>
       <width>81</width>
       <height>41</height>
      </rect>
@@ -237,7 +237,7 @@
     <property name="geometry">
      <rect>
       <x>970</x>
-      <y>350</y>
+      <y>380</y>
       <width>111</width>
       <height>41</height>
      </rect>
@@ -257,7 +257,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1096</width>
+     <width>1071</width>
      <height>25</height>
     </rect>
    </property>
