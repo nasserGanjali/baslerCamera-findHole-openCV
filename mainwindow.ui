@@ -60,32 +60,6 @@
      <string>Defect :</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>950</x>
-      <y>530</y>
-      <width>93</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>config</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btnTestGPIO">
-    <property name="geometry">
-     <rect>
-      <x>900</x>
-      <y>490</y>
-      <width>93</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>gpio</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="lblTotal">
     <property name="geometry">
      <rect>
@@ -120,45 +94,6 @@
     </property>
     <property name="text">
      <string>0</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btnTestCamera">
-    <property name="geometry">
-     <rect>
-      <x>950</x>
-      <y>570</y>
-      <width>93</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Test Camera</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btnTestGPIO_2">
-    <property name="geometry">
-     <rect>
-      <x>840</x>
-      <y>530</y>
-      <width>93</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>save</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btnTestGPIO_3">
-    <property name="geometry">
-     <rect>
-      <x>840</x>
-      <y>570</y>
-      <width>93</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>load</string>
     </property>
    </widget>
    <widget class="QLabel" name="lblHistory">
@@ -265,8 +200,19 @@
     <property name="title">
      <string>file</string>
     </property>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuConfig">
+    <property name="title">
+     <string>config</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionImage"/>
+    <addaction name="actionCamera"/>
+    <addaction name="actionInternal_GPIO"/>
    </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuConfig"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -277,6 +223,26 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionExit">
+   <property name="text">
+    <string>exit</string>
+   </property>
+  </action>
+  <action name="actionImage">
+   <property name="text">
+    <string>Image</string>
+   </property>
+  </action>
+  <action name="actionCamera">
+   <property name="text">
+    <string>Camera</string>
+   </property>
+  </action>
+  <action name="actionInternal_GPIO">
+   <property name="text">
+    <string>Internal GPIO</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

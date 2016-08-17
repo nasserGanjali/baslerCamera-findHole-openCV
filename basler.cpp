@@ -304,7 +304,7 @@ int basler::startTriggerMode()
             {
                 if(Main->isTriggeMode && !Main->appClosed)
                 {
-                    cout << "t"<<endl;
+//                    cout << "t"<<endl;
                     continue;
                 }
                 // Timeout
@@ -358,6 +358,7 @@ int basler::startTriggerMode()
 void basler::loadConfig()
 {
     const char Filename[] = "NodeMap.pfs";
+//    printf("filename: %s\n",Filename);
     // The exit code of the sample application.
     int exitCode = 0;
 
@@ -382,6 +383,7 @@ void basler::loadConfig()
 
         // Just for demonstration, read the content of the file back to the camera's node map with enabled validation.
         cout << "Reading file back to camera's node map..."<< endl;
+//        qDebug()<<QDir::currentPath();
         CFeaturePersistence::Load( Filename, &camera.GetNodeMap(), true );
 
         // Close the camera.

@@ -95,6 +95,31 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::on_actionImage_triggered()
+{
+    dialogConfig->show();
+}
+
+void MainWindow::on_actionCamera_triggered()
+{
+    dialogCheckCamera->show();
+}
+
+void MainWindow::on_actionInternal_GPIO_triggered()
+{
+    static bool first = true;
+    if(first)
+    {
+        first = false;
+        QtConcurrent::run(testTrigge);
+    }
+    else
+    {
+        stopTriggeTest();
+        first = true;
+    }
+}
+
 void MainWindow::getInput()
 {
     while(!appClosed)
@@ -125,10 +150,6 @@ void MainWindow::getFrameWhile()
     }
 }
 
-void MainWindow::on_btnTestCamera_clicked()
-{
-    dialogCheckCamera->show();
-}
 
 void MainWindow::getFrame()
 {
@@ -147,7 +168,8 @@ void MainWindow::getFrame()
             triggerTimeout = res;
         else if(res == -2)
         {
-            stopTriggeTest();
+             stopTriggeTest();
+             qDebug()<<"bad shot !!!";
             singleShot(2);
             return;
         }
@@ -349,11 +371,7 @@ void MainWindow::updateGraphicView()
     ui->lblHistoryTotal->setText(QString::number(historyTotalProdocts));
 }
 
-void MainWindow::on_pushButton_clicked()
-{
-    //    Dialog dialog(0,this);
-    dialogConfig->show();
-}
+
 
 bool MainWindow::findDiameter(char *input,int index)
 {
@@ -416,21 +434,21 @@ bool MainWindow::findDiameter(char *input,int index)
     return result;
 }
 
-void MainWindow::on_btnTestGPIO_clicked()
-{
-    static bool first = true;
-    if(first)
-    {
-        first = false;
-        QtConcurrent::run(testTrigge);
-    }
-    else
-    {
-        stopTriggeTest();
-        first = true;
-    }
+//void MainWindow::on_btnTestGPIO_clicked()
+//{
+//    static bool first = true;
+//    if(first)
+//    {
+//        first = false;
+//        QtConcurrent::run(testTrigge);
+//    }
+//    else
+//    {
+//        stopTriggeTest();
+//        first = true;
+//    }
 
-}
+//}
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
@@ -444,16 +462,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
 }
 
 
-void MainWindow::on_btnTestGPIO_2_clicked()
-{
-    saveToHistory();
-}
-
-
-void MainWindow::on_btnTestGPIO_3_clicked()
-{
-    loadHistory();
-}
 
 bool MainWindow::saveToHistory()
 {

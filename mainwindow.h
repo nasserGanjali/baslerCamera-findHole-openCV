@@ -95,12 +95,12 @@ private:
 private slots:
     void updateGraphicView();
     void closeEvent(QCloseEvent *event);
-    void on_pushButton_clicked();
-    void on_btnTestGPIO_clicked();
-    void on_btnTestCamera_clicked();
-    void on_btnTestGPIO_2_clicked();
-    void on_btnTestGPIO_3_clicked();
+//    void on_btnTestGPIO_clicked();
     void tmrSaveTicked();
+    void on_actionImage_triggered();
+    void on_actionCamera_triggered();
+    void on_actionInternal_GPIO_triggered();
+
 };
 
 #endif // MAINWINDOW_H
