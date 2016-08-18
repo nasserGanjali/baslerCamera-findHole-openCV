@@ -28,6 +28,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     UjMax = 600;UjMin = 10;UiMax = 799;UiMin = 300;RjMax = 400;RjMin = 10 ;RiMax = 799;RiMin = 300;
 
+
+    loadHistory();
+
+    loadConfig();
+
     dialogCheckCamera = new dialogTestCamera(0,this,camera);
 
     //camera
@@ -75,7 +80,55 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
-    loadHistory();
+}
+
+void MainWindow::loadConfig()
+{
+    QFile file("configuration.conf");
+    if(file.open(QIODevice::ReadOnly))
+    {
+        QTextStream stream(&file);
+        while(!stream.atEnd())
+        {
+            QString line = stream.readLine();
+            if(line.contains("CV_lowerd="))
+                CV_lowerd = line.mid(10,line.length()).toInt();
+            if(line.contains("CV_upperb="))
+                CV_upperb = line.mid(10,line.length()).toInt();
+            if(line.contains("CV_kernelGain="))
+                CV_kernelGain = line.mid(14,line.length()).toInt();
+            if(line.contains("objectThr="))
+                objectThr = line.mid(10,line.length()).toInt();
+            if(line.contains("maxHollSize="))
+                maxHollSize = line.mid(12,line.length()).toInt();
+            if(line.contains("minHollSize="))
+                minHollSize = line.mid(12,line.length()).toInt();
+            if(line.contains("RjMax="))
+                RjMax = line.mid(6,line.length()).toInt();
+            if(line.contains("UiMin="))
+                UiMin = line.mid(6,line.length()).toInt();
+        }
+
+        file.close();
+    }
+}
+
+void MainWindow::saveConfig()
+{
+    QFile file("configuration.conf");
+    if(file.open(QIODevice::ReadWrite))
+    {
+        QTextStream stream(&file);
+        stream << "CV_lowerd=" << QString::number(CV_lowerd) <<endl;
+        stream << "CV_upperb=" << QString::number(CV_upperb) <<endl;
+        stream << "CV_kernelGain=" << QString::number(CV_kernelGain) <<endl;
+        stream << "objectThr=" << QString::number(objectThr) <<endl;
+        stream << "maxHollSize=" << QString::number(maxHollSize) <<endl;
+        stream << "minHollSize=" << QString::number(minHollSize) <<endl;
+        stream << "RjMax=" << QString::number(RjMax) <<endl;
+        stream << "UiMin=" << QString::number(UiMin) <<endl;
+    }
+    file.close();
 }
 
 void MainWindow::tmrSaveTicked()

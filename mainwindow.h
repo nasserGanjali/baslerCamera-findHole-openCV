@@ -69,6 +69,8 @@ public:
     bool saveToHistory();
     bool loadHistory();
     void getInput();
+    void loadConfig();
+    void saveConfig();
     ~MainWindow();
 
 

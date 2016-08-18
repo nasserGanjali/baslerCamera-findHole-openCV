@@ -61,6 +61,7 @@ void Dialog::on_brnOK_clicked()
     else
         Main->showFullSizeImage = false;
 
+    Main->saveConfig();
     this->close();
 }
 
