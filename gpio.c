@@ -153,21 +153,30 @@ int closeGPIO()
  */
 int getGPIO()
 {
+    static int pin3LastStatus = 0, pin4LastStatus = 0;
     while( !isGPIOClosed )
     {
         usleep(20000);
         u_int16_t input = pca9555GetInput();
         if (!(input & 0x8))
         {
-            return 4;
-        }else if(!(input & 0x4))
+            if( !pin4LastStatus )
+            {
+                pin4LastStatus = 1;
+                return 4;
+            }
+        }else
+             pin4LastStatus = 0;
+
+        if(!(input & 0x4))
         {
-            return 3;
-        }
-        else
-        {
-            continue;
-        }
+            if( !pin3LastStatus )
+            {
+                pin3LastStatus = 1;
+                return 3;
+            }
+        }else
+             pin3LastStatus = 0;
     }
 }
 
@@ -198,7 +207,7 @@ void stopTriggeTest(){
 void singleShot(int value)
 {
     pca9555SetOutput(value);
-    usleep(5000);
+    usleep(50000);
     pca9555SetOutput(0);
     printf("singleShot !!! \n");
 }
