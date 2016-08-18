@@ -26,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
     CV_lowerd = 200; CV_upperb = 255;
     CV_kernelGain = 15;
 
+    UjMax = 600;UjMin = 10;UiMax = 799;UiMin = 300;RjMax = 400;RjMin = 10 ;RiMax = 799;RiMin = 300;
+
     dialogCheckCamera = new dialogTestCamera(0,this,camera);
 
     //camera
@@ -170,6 +172,7 @@ void MainWindow::getFrame()
         {
              stopTriggeTest();
              qDebug()<<"bad shot !!!";
+//                QTimer::setSingleShot(1);
             singleShot(2);
             return;
         }
@@ -357,6 +360,15 @@ void MainWindow::updateGraphicView()
     if(imgUpdateView != NULL)
         free(imgUpdateView);
 
+    if(!isTriggeMode)
+    {
+        for(int j = 0, i = UiMin; j < HEIGHT; j++)
+            buffer[index][i + j * WIDTH] = 0;
+
+        for(int i = 0, j = RjMax; i < WIDTH; i++)
+            buffer[index][i + j * WIDTH] = 0;
+    }
+
     if(showFullSizeImage || (!isTriggeMode))
         imgUpdateView = new QImage((uchar*)buffer[index], WIDTH, HEIGHT, QImage::Format_Indexed8);
     else
@@ -377,8 +389,8 @@ bool MainWindow::findDiameter(char *input,int index)
 {
     bool result = true;
     int Ui,Uj,Ri,Rj;
-    for(int j = 10;j < 600; j++)
-        for(int i = 799; i > 300; i--)
+    for(int j = UjMin;j < UjMax; j++)
+        for(int i = UiMax; i > UiMin; i--)
         {
             int k = (uchar)input[i + 800 * j];
             if(k < objectThr)
@@ -392,8 +404,8 @@ bool MainWindow::findDiameter(char *input,int index)
         }
 
 
-    for(int i = 799; i > 300; i--)
-        for(int j = 10;j < 500; j++)
+    for(int i = RiMax; i > RiMin; i--)
+        for(int j = RjMin;j < RjMax; j++)
         {
             int k = (uchar)input[i + 800 * j];
             if(k < objectThr)
@@ -413,6 +425,7 @@ bool MainWindow::findDiameter(char *input,int index)
         Ri = WIDTH / 2;
         Ui = WIDTH / 2 - 10;
         Uj = HEIGHT / -10;
+        qDebug()<<" k < 0";
         result = false;
     }
     if(k % 2 != 0)
@@ -428,9 +441,14 @@ bool MainWindow::findDiameter(char *input,int index)
         {
             I = (i - Ui+k); J = (j - Rj+k);
             if((I + J * k*2) > WIDTH * HEIGHT  || (i + j * 800) > WIDTH * HEIGHT )
+            {
+                qDebug()<<"bad location !";
                 return false;
+            }
             bufferCircle[index][I + J * k*2] = input[i + j * 800];
         }
+
+
     return result;
 }
 

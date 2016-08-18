@@ -58,12 +58,13 @@ public:
     int triggerTimeout;
     int appClosed;
     int minHollSize,maxHollSize;
+    int UjMax ,UjMin ,UiMax ,UiMin ,RjMax ,RjMin ,RiMax ,RiMin ;
     bool isTriggeMode;
-//    bool isHollFinding;
+    //    bool isHollFinding;
     bool ShowOriginalImage;
     bool showFullSizeImage;
     explicit MainWindow(QWidget *parent = 0);
-     basler *camera;
+    basler *camera;
     void getFrame();
     bool saveToHistory();
     bool loadHistory();
@@ -95,7 +96,7 @@ private:
 private slots:
     void updateGraphicView();
     void closeEvent(QCloseEvent *event);
-//    void on_btnTestGPIO_clicked();
+    //    void on_btnTestGPIO_clicked();
     void tmrSaveTicked();
     void on_actionImage_triggered();
     void on_actionCamera_triggered();
