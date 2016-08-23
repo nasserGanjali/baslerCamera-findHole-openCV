@@ -207,7 +207,7 @@ void stopTriggeTest(){
 void singleShot(int value)
 {
     pca9555SetOutput(value);
-    usleep(20000);
+    usleep(200000);
     pca9555SetOutput(0);
     printf("singleShot !!! \n");
 }

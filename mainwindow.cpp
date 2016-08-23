@@ -75,10 +75,15 @@ MainWindow::MainWindow(QWidget *parent) :
     QtConcurrent::run(this,&MainWindow::getFrameWhile);
     //qDebug()<<"asdasd";
     GPIO_start();
+
+    singleShot(0);
+
     //    getInput();
     QtConcurrent::run(this,&MainWindow::getInput);
 
-
+    this->setGeometry(40,31,1850,1050);
+    this->show();
+//    qDebug()<<"test";
 
 }
 
