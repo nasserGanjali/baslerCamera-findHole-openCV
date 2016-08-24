@@ -101,6 +101,7 @@ private slots:
     //    void on_btnTestGPIO_clicked();
     void tmrSaveTicked();
     void on_actionImage_triggered();
+    void on_actionExit_triggered();
     void on_actionCamera_triggered();
     void on_actionInternal_GPIO_triggered();
 

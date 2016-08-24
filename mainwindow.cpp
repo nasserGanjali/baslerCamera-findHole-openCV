@@ -254,13 +254,14 @@ void MainWindow::getFrame()
     int index = indexBuffer;
     memcpy(buffer[index], (uchar*)camera->globalImageBuffer, WIDTH * HEIGHT);
 
-    if(mode && !triggerTimeout)
+    /*if(mode && !triggerTimeout)
     {
         // int index = (indexBuffer == 0) ? 9 : indexBuffer - 1;
         QtConcurrent::run(this,&MainWindow::Algorithm,index);
     }
-    else
+    else*/
         indexBuffer = (index + 1) % 10;
+        totalProdocts ++;
 
     //    if(!isTriggeMode)
     //    {
@@ -441,14 +442,17 @@ void MainWindow::updateGraphicView()
     ui->lblHistoryTotal->setText(QString::number(historyTotalProdocts));
 }
 
-
+/*
+ * UjMax = 600;UjMin = 10;UiMax = 799;UiMin = 300;RjMax = 400;RjMin = 10 ;RiMax = 799;RiMin = 300;
+ */
 
 bool MainWindow::findDiameter(char *input,int index)
 {
+    UjMax = 600;UjMin = 10;UiMax = 500;UiMin = 0;RjMax = 400;RjMin = 10 ;RiMax = 500;RiMin = 0;
     bool result = true;
     int Ui,Uj,Ri,Rj;
     for(int j = UjMin;j < UjMax; j++)
-        for(int i = UiMax; i > UiMin; i--)
+        for(int i = UiMin; i < UiMax; i++)
         {
             int k = (uchar)input[i + 800 * j];
             if(k < objectThr)
@@ -462,7 +466,7 @@ bool MainWindow::findDiameter(char *input,int index)
         }
 
 
-    for(int i = RiMax; i > RiMin; i--)
+    for(int i = RiMin; i < RiMax; i++)
         for(int j = RjMin;j < RjMax; j++)
         {
             int k = (uchar)input[i + 800 * j];
@@ -537,7 +541,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
     event->accept();
 }
 
-
+void MainWindow::on_actionExit_triggered()
+{
+    closeEvent(0);
+}
 
 bool MainWindow::saveToHistory()
 {

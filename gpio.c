@@ -156,7 +156,7 @@ int getGPIO()
     static int pin3LastStatus = 0, pin4LastStatus = 0;
     while( !isGPIOClosed )
     {
-        usleep(20000);
+        usleep(1000);
         u_int16_t input = pca9555GetInput();
         if (!(input & 0x8))
         {
