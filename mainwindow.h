@@ -94,7 +94,7 @@ private:
     bool findDiameter(char *input, int index);
     void Algorithm(int index);
     void addTmpFileToHistory();
-
+    void saveImage(char *input);
 private slots:
     void updateGraphicView();
     void closeEvent(QCloseEvent *event);

@@ -282,6 +282,7 @@ void MainWindow::Algorithm(int index)
 {
     char test[800*600];
     memcpy(test,buffer[index],800*600);
+    saveImage(test);
     if(findDiameter(test,index))
         findHoles(index);
 //    findDiameter(test,index);
@@ -498,6 +499,18 @@ bool MainWindow::findDiameter(char *input,int index)
 //    }
 
 //}
+
+void MainWindow::saveImage(char *input)
+{
+    static int index = 0;
+    if(!QDir("saveImage").exists())
+        QDir().mkdir("saveImage");
+
+    QFile file("saveImage/" + QString::number(index++));
+    file.open(QFile::WriteOnly);
+    file.write(input, WIDTH * HEIGHT);
+    file.close();
+}
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
