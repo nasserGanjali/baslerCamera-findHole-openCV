@@ -70,10 +70,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&tmrSave,SIGNAL(timeout()),SLOT(tmrSaveTicked()));
     tmrSave.start();
 
-    //qDebug()<<"asdasd";
+
     dialogConfig = new Dialog(0,this);
     QtConcurrent::run(this,&MainWindow::getFrameWhile);
-    //qDebug()<<"asdasd";
+
     GPIO_start();
 
     singleShot(0);
@@ -83,8 +83,99 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->setGeometry(40,31,1850,1050);
     this->show();
-//    qDebug()<<"test";
 
+    initGraphicHistory();
+
+}
+
+void MainWindow::initGraphicHistory()
+{
+    QGraphicsScene *scene1 = new QGraphicsScene();
+    scene1->setBackgroundBrush(QBrush(Qt::white));
+    ui->graphicsView_1->setScene(scene1);
+
+    QGraphicsScene *scene2 = new QGraphicsScene();
+    scene2->setBackgroundBrush(QBrush(Qt::white));
+    ui->graphicsView_2->setScene(scene2);
+
+    QGraphicsScene *scene3 = new QGraphicsScene();
+    scene3->setBackgroundBrush(QBrush(Qt::white));
+    ui->graphicsView_3->setScene(scene3);
+
+    QGraphicsScene *scene4 = new QGraphicsScene();
+    scene4->setBackgroundBrush(QBrush(Qt::white));
+    ui->graphicsView_4->setScene(scene4);
+
+    QGraphicsScene *scene5 = new QGraphicsScene();
+    scene5->setBackgroundBrush(QBrush(Qt::white));
+    ui->graphicsView_5->setScene(scene5);
+
+    QGraphicsScene *scene6 = new QGraphicsScene();
+    scene6->setBackgroundBrush(QBrush(Qt::white));
+    ui->graphicsView_6->setScene(scene6);
+
+    QGraphicsScene *scene7 = new QGraphicsScene();
+    scene7->setBackgroundBrush(QBrush(Qt::white));
+    ui->graphicsView_7->setScene(scene7);
+
+    QGraphicsScene *scene8 = new QGraphicsScene();
+    scene8->setBackgroundBrush(QBrush(Qt::white));
+    ui->graphicsView_8->setScene(scene8);
+
+    QGraphicsScene *scene9 = new QGraphicsScene();
+    scene9->setBackgroundBrush(QBrush(Qt::white));
+    ui->graphicsView_9->setScene(scene9);
+
+    QGraphicsScene *scene10 = new QGraphicsScene();
+    scene10->setBackgroundBrush(QBrush(Qt::white));
+    ui->graphicsView_10->setScene(scene10);
+
+    QGraphicsScene *scene11 = new QGraphicsScene();
+    scene11->setBackgroundBrush(QBrush(Qt::white));
+    ui->graphicsView_11->setScene(scene11);
+
+    QGraphicsScene *scene12 = new QGraphicsScene();
+    scene12->setBackgroundBrush(QBrush(Qt::white));
+    ui->graphicsView_12->setScene(scene12);
+
+    QGraphicsScene *scene13 = new QGraphicsScene();
+    scene13->setBackgroundBrush(QBrush(Qt::white));
+    ui->graphicsView_13->setScene(scene13);
+
+    QGraphicsScene *scene14 = new QGraphicsScene();
+    scene14->setBackgroundBrush(QBrush(Qt::white));
+    ui->graphicsView_14->setScene(scene14);
+
+    QGraphicsScene *scene15 = new QGraphicsScene();
+    scene15->setBackgroundBrush(QBrush(Qt::white));
+    ui->graphicsView_15->setScene(scene15);
+
+    QGraphicsScene *scene16 = new QGraphicsScene();
+    scene16->setBackgroundBrush(QBrush(Qt::white));
+    ui->graphicsView_16->setScene(scene15);
+}
+
+void MainWindow::updateGraphicHistory(int value)
+{
+    ui->graphicsView_16->scene()->setBackgroundBrush(ui->graphicsView_15->scene()->backgroundBrush());
+    ui->graphicsView_15->scene()->setBackgroundBrush(ui->graphicsView_14->scene()->backgroundBrush());
+    ui->graphicsView_14->scene()->setBackgroundBrush(ui->graphicsView_13->scene()->backgroundBrush());
+    ui->graphicsView_13->scene()->setBackgroundBrush(ui->graphicsView_12->scene()->backgroundBrush());
+    ui->graphicsView_12->scene()->setBackgroundBrush(ui->graphicsView_11->scene()->backgroundBrush());
+    ui->graphicsView_11->scene()->setBackgroundBrush(ui->graphicsView_10->scene()->backgroundBrush());
+    ui->graphicsView_10->scene()->setBackgroundBrush(ui->graphicsView_9->scene()->backgroundBrush());
+    ui->graphicsView_9->scene()->setBackgroundBrush(ui->graphicsView_8->scene()->backgroundBrush());
+    ui->graphicsView_8->scene()->setBackgroundBrush(ui->graphicsView_7->scene()->backgroundBrush());
+    ui->graphicsView_7->scene()->setBackgroundBrush(ui->graphicsView_6->scene()->backgroundBrush());
+    ui->graphicsView_6->scene()->setBackgroundBrush(ui->graphicsView_5->scene()->backgroundBrush());
+    ui->graphicsView_5->scene()->setBackgroundBrush(ui->graphicsView_4->scene()->backgroundBrush());
+    ui->graphicsView_4->scene()->setBackgroundBrush(ui->graphicsView_3->scene()->backgroundBrush());
+    ui->graphicsView_3->scene()->setBackgroundBrush(ui->graphicsView_2->scene()->backgroundBrush());
+    ui->graphicsView_2->scene()->setBackgroundBrush(ui->graphicsView_1->scene()->backgroundBrush());
+    if(value)
+        ui->graphicsView_1->scene()->setBackgroundBrush(QBrush(Qt::green));
+    else
+        ui->graphicsView_1->scene()->setBackgroundBrush(QBrush(Qt::red));
 }
 
 void MainWindow::loadConfig()
@@ -152,7 +243,7 @@ void MainWindow::tmrSaveTicked()
     if(! (QDir("history/" + today).exists()))
         QDir().mkdir("history/" + today);
     QString t = ("echo '" + QString::number(totalProdocts) + "_" + QString::number(defectProdocts) + "' >" + "history/" + today + "/" + today+ "_tmp");
-    //    qDebug()<<t;
+
     system(t.toUtf8());
 }
 
@@ -191,7 +282,7 @@ void MainWindow::getInput()
     while(!appClosed)
     {
         u_int16_t v = getGPIO();
-        qDebug()<<v;
+       // qDebug()<<v;
 
         if(v == 3)
         {
@@ -211,7 +302,7 @@ void MainWindow::getFrameWhile()
 {
     while(!appClosed)
     {
-        //        qDebug()<<"time :"<<QTime::currentTime().toString();
+
         getFrame();
     }
 }
@@ -230,6 +321,7 @@ void MainWindow::getFrame()
         }
         triggerTimeout = 0;
         res = camera->startTriggerMode();
+        qDebug()<<"========>"<<res;
         if(res == 0 || res == 1)
             triggerTimeout = res;
         else if(res == -2)
@@ -348,7 +440,6 @@ void MainWindow::findHoles(int index)
     {
         try
         {
-//            qDebug()<<"sizeW:"<<circleSizeW[index];
             char *tmpBuffer = (char *)malloc(circleSizeW[index] * circleSizeH[index]);
             memcpy(tmpBuffer,bufferCircle[index],circleSizeW[index] * circleSizeH[index]);
             cv::Mat img(circleSizeH[index],circleSizeW[index],CV_8U,tmpBuffer);
@@ -369,10 +460,9 @@ void MainWindow::findHoles(int index)
             vector<float> radius (contours.size());
 
             int i = 0;
-            int defect = false;//qDebug()<<"x1: ";
+            int defect = false;
             for(i = 0; i < contours.size(); i++)
             {
-//                qDebug()<<"x: ";
                 if(!ShowOriginalImage)
                 {
                     Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255) , rng.uniform(0, 255));
@@ -402,7 +492,7 @@ void MainWindow::findHoles(int index)
             free(tmpBuffer);
         }catch(const GenericException &e)
         {
-            qDebug()<<"1";
+            qDebug()<<"exep 404";
         }
     }
 }
@@ -415,13 +505,14 @@ void MainWindow::updateGraphicView()
     int index = indexBuffer - 1;
     if(index < 0)
         index = 9;
-    //qDebug()<<index;
     static int lastBufferIndex = -1;
     if(lastBufferIndex == indexBuffer - 1)
         return;
 
     lastBufferIndex = indexBuffer - 1;
     ui->graphicsView->scene()->clear();
+
+    updateGraphicHistory(!lastProdoctIsDefect);
     //    ui->graphicsView->scene()->
     if(imgUpdateView != NULL)
         free(imgUpdateView);
@@ -465,22 +556,18 @@ bool MainWindow::findDiameter(char *input,int index)
     //UjMax = 600;UjMin = 10;UiMax = 500;UiMin = 0;RjMax = 400;RjMin = 10 ;RiMax = 500;RiMin = 0;
     bool result = true;
 
-    //    qDebug()<<"k = "<<k;
 
     circleSizeW[index] = lineRight - lineLeft +  1;
     circleSizeH[index] = lineDown - lineUp  + 1;
 
     int I ,J;
-    int s =0;
     for(int j = lineUp; j <= lineDown; j++)
         for(int i = lineLeft; i <= lineRight; i++)
         {
             I = (i - lineLeft); J = (j - lineUp);
 
             bufferCircle[index][I + J * circleSizeW[index]] = input[i + j * 800];
-            s++;
         }
-    qDebug()<<"s :"<<s;
     return result;
 }
 
@@ -558,7 +645,7 @@ bool MainWindow::loadHistory()
         total = defect = 0;
     else
     {
-        QDir history("history/" + today);//qDebug()<<"123";
+        QDir history("history/" + today);
         QStringList list = history.entryList();
         foreach (QString fileName, list) {
             fileName = "history/" + today + "/" + fileName;

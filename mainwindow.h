@@ -22,7 +22,7 @@
 #include <QThread>
 #include <QTime>
 #include <QCloseEvent>
-
+#include <QPalette>
 #include "basler.h"
 #include "dialog.h"
 
@@ -95,6 +95,8 @@ private:
     void Algorithm(int index);
     void addTmpFileToHistory();
     void saveImage(char *input);
+    void updateGraphicHistory(int value);
+    void initGraphicHistory();
 private slots:
     void updateGraphicView();
     void closeEvent(QCloseEvent *event);
