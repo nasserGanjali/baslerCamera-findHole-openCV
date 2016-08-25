@@ -18,8 +18,10 @@ Dialog::Dialog(QWidget *parent, MainWindow *mainwindow) :
     ui->cbxShowFullSize->setChecked(Main->showFullSizeImage);
     ui->sbxMaxHoll->setValue(Main->maxHollSize);
     ui->sbxMinHoll->setValue(Main->minHollSize);
-    ui->sbxRLine->setValue(Main->RjMax);
-    ui->sbxULine->setValue(Main->UiMin);
+    ui->sbxRightLine->setValue(Main->lineRight);
+    ui->sbxLeftLine->setValue(Main->lineLeft);
+    ui->sbxUpLine->setValue(Main->lineUp);
+    ui->sbxDownLine->setValue(Main->lineDown);
 
     ui->rbnCameraMode->setChecked(!Main->isTriggeMode);
 //    ui->rbnHoll->setChecked(Main->isHollFinding);
@@ -39,8 +41,10 @@ void Dialog::on_brnOK_clicked()
     Main->objectThr = ui->scrObjectThr->value();
     Main->maxHollSize = ui->sbxMaxHoll->value();
     Main->minHollSize = ui->sbxMinHoll->value();
-    Main->RjMax = ui->sbxRLine->value();
-    Main->UiMin = ui->sbxULine->value();
+    Main->lineLeft = ui->sbxLeftLine->value();
+    Main->lineRight = ui->sbxRightLine->value();
+    Main->lineUp = ui->sbxUpLine->value();
+    Main->lineDown = ui->sbxDownLine->value();
     if(ui->rbnCameraMode->isChecked())
         Main->isTriggeMode = false;
     else
@@ -93,8 +97,10 @@ void Dialog::on_brnApply_clicked()
     Main->objectThr = ui->scrObjectThr->value();
     Main->maxHollSize = ui->sbxMaxHoll->value();
     Main->minHollSize = ui->sbxMinHoll->value();
-    Main->RjMax = ui->sbxRLine->value();
-    Main->UiMin = ui->sbxULine->value();
+    Main->lineLeft = ui->sbxLeftLine->value();
+    Main->lineRight = ui->sbxRightLine->value();
+    Main->lineUp = ui->sbxUpLine->value();
+    Main->lineDown = ui->sbxDownLine->value();
     if(ui->rbnCameraMode->isChecked())
         Main->isTriggeMode = false;
     else

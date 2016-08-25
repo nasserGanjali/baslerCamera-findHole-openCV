@@ -58,7 +58,7 @@ public:
     int triggerTimeout;
     int appClosed;
     int minHollSize,maxHollSize;
-    int UjMax ,UjMin ,UiMax ,UiMin ,RjMax ,RjMin ,RiMax ,RiMin ;
+    int lineLeft ,lineRight, lineUp, lineDown ;
     bool isTriggeMode;
     //    bool isHollFinding;
     bool ShowOriginalImage;
@@ -87,7 +87,7 @@ private:
     QImage *imgUpdateView;
     char *buffer[10];
     char *bufferCircle[10];
-    int circleSize[10];
+    int circleSizeW[10],circleSizeH[10];
     int defectProdocts,totalProdocts,historyTotalProdocts,historyDefectProdocts;
     int lastProdoctIsDefect;
     int indexBuffer;

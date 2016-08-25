@@ -26,8 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
     CV_lowerd = 200; CV_upperb = 255;
     CV_kernelGain = 15;
 
-    UjMax = 600;UjMin = 10;UiMax = 799;UiMin = 300;RjMax = 400;RjMin = 10 ;RiMax = 799;RiMin = 300;
-
+//    UjMax = 600;UjMin = 10;UiMax = 799;UiMin = 300;RjMax = 400;RjMin = 10 ;RiMax = 799;RiMin = 300;
+    lineLeft = 300, lineRight = 500, lineUp = 400 , lineDown = 500;
 
     loadHistory();
 
@@ -60,9 +60,9 @@ MainWindow::MainWindow(QWidget *parent) :
         bufferCircle[i] = (char *)malloc(WIDTH * HEIGHT);
 
     for(int i = 0; i < 10; i++)
-        circleSize[i] = 0;
+        circleSizeW[i] = circleSizeH[i] = 0;
 
-    tmrGraphicView.setInterval(500);
+    tmrGraphicView.setInterval(10);
     connect(&tmrGraphicView,SIGNAL(timeout()),SLOT(updateGraphicView()));
     tmrGraphicView.start();
 
@@ -108,10 +108,14 @@ void MainWindow::loadConfig()
                 maxHollSize = line.mid(12,line.length()).toInt();
             if(line.contains("minHollSize="))
                 minHollSize = line.mid(12,line.length()).toInt();
-            if(line.contains("RjMax="))
-                RjMax = line.mid(6,line.length()).toInt();
-            if(line.contains("UiMin="))
-                UiMin = line.mid(6,line.length()).toInt();
+            if(line.contains("lineLeft="))
+                lineLeft = line.mid(9,line.length()).toInt();
+            if(line.contains("lineRight="))
+                lineRight = line.mid(10,line.length()).toInt();
+            if(line.contains("lineUp="))
+                lineUp = line.mid(7,line.length()).toInt();
+            if(line.contains("lineDown="))
+                lineDown = line.mid(9,line.length()).toInt();
         }
 
         file.close();
@@ -130,8 +134,10 @@ void MainWindow::saveConfig()
         stream << "objectThr=" << QString::number(objectThr) <<endl;
         stream << "maxHollSize=" << QString::number(maxHollSize) <<endl;
         stream << "minHollSize=" << QString::number(minHollSize) <<endl;
-        stream << "RjMax=" << QString::number(RjMax) <<endl;
-        stream << "UiMin=" << QString::number(UiMin) <<endl;
+        stream << "lineLeft=" << QString::number(lineLeft) <<endl;
+        stream << "lineRight=" << QString::number(lineRight) <<endl;
+        stream << "lineUp=" << QString::number(lineUp) <<endl;
+        stream << "lineDown=" << QString::number(lineDown) <<endl;
     }
     file.close();
 }
@@ -254,14 +260,14 @@ void MainWindow::getFrame()
     int index = indexBuffer;
     memcpy(buffer[index], (uchar*)camera->globalImageBuffer, WIDTH * HEIGHT);
 
-    /*if(mode && !triggerTimeout)
+    if(mode && !triggerTimeout)
     {
         // int index = (indexBuffer == 0) ? 9 : indexBuffer - 1;
         QtConcurrent::run(this,&MainWindow::Algorithm,index);
     }
-    else*/
+    else
         indexBuffer = (index + 1) % 10;
-        totalProdocts ++;
+//        totalProdocts ++;
 
     //    if(!isTriggeMode)
     //    {
@@ -278,6 +284,7 @@ void MainWindow::Algorithm(int index)
     memcpy(test,buffer[index],800*600);
     if(findDiameter(test,index))
         findHoles(index);
+//    findDiameter(test,index);
     indexBuffer = (index + 1) % 10;
 }
 
@@ -340,11 +347,10 @@ void MainWindow::findHoles(int index)
     {
         try
         {
-            if(circleSize[index] <= 0)
-                return;
-            char *tmpBuffer = (char *)malloc(circleSize[index] * circleSize[index]);
-            memcpy(tmpBuffer,bufferCircle[index],circleSize[index] * circleSize[index]);
-            cv::Mat img(circleSize[index],circleSize[index],CV_8U,tmpBuffer);
+//            qDebug()<<"sizeW:"<<circleSizeW[index];
+            char *tmpBuffer = (char *)malloc(circleSizeW[index] * circleSizeH[index]);
+            memcpy(tmpBuffer,bufferCircle[index],circleSizeW[index] * circleSizeH[index]);
+            cv::Mat img(circleSizeH[index],circleSizeW[index],CV_8U,tmpBuffer);
             vector<vector<Point> > contours;
             vector<Vec4i> hierarchy;
 
@@ -362,10 +368,10 @@ void MainWindow::findHoles(int index)
             vector<float> radius (contours.size());
 
             int i = 0;
-            int defect = false;
+            int defect = false;//qDebug()<<"x1: ";
             for(i = 0; i < contours.size(); i++)
             {
-
+//                qDebug()<<"x: ";
                 if(!ShowOriginalImage)
                 {
                     Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0, 255) , rng.uniform(0, 255));
@@ -391,7 +397,7 @@ void MainWindow::findHoles(int index)
             }
 
             if(!ShowOriginalImage)
-                memcpy(bufferCircle[index], drawing.data,circleSize[index] * circleSize[index]);
+                memcpy(bufferCircle[index], drawing.data,circleSizeW[index] * circleSizeH[index]);
             free(tmpBuffer);
         }catch(const GenericException &e)
         {
@@ -419,20 +425,27 @@ void MainWindow::updateGraphicView()
     if(imgUpdateView != NULL)
         free(imgUpdateView);
 
-    if(!isTriggeMode)
+    if(!isTriggeMode || showFullSizeImage)
     {
-        for(int j = 0, i = UiMin; j < HEIGHT; j++)
-            buffer[index][i + j * WIDTH] = 0;
+        for(int j = 0, i = lineLeft; j < HEIGHT; j++)
+            buffer[index][i + j * WIDTH] = 255;
 
-        for(int i = 0, j = RjMax; i < WIDTH; i++)
-            buffer[index][i + j * WIDTH] = 0;
+        for(int j = 0, i = lineRight; j < HEIGHT; j++)
+            buffer[index][i + j * WIDTH] = 255;
+
+        for(int i = 0, j = lineUp; i < WIDTH; i++)
+            buffer[index][i + j * WIDTH] = 255;
+
+        for(int i = 0, j = lineDown; i < WIDTH; i++)
+            buffer[index][i + j * WIDTH] = 255;
     }
 
     if(showFullSizeImage || (!isTriggeMode))
         imgUpdateView = new QImage((uchar*)buffer[index], WIDTH, HEIGHT, QImage::Format_Indexed8);
     else
-        imgUpdateView = new QImage((uchar*)bufferCircle[index], circleSize[index], circleSize[index], QImage::Format_Indexed8);
-
+    {
+        imgUpdateView = new QImage((uchar*)bufferCircle[index], circleSizeW[index], circleSizeH[index], QImage::Format_Indexed8);
+    }
     scene->addPixmap(QPixmap::fromImage(*imgUpdateView));
     ui->graphicsView->show();
 
@@ -448,69 +461,25 @@ void MainWindow::updateGraphicView()
 
 bool MainWindow::findDiameter(char *input,int index)
 {
-    UjMax = 600;UjMin = 10;UiMax = 500;UiMin = 0;RjMax = 400;RjMin = 10 ;RiMax = 500;RiMin = 0;
+    //UjMax = 600;UjMin = 10;UiMax = 500;UiMin = 0;RjMax = 400;RjMin = 10 ;RiMax = 500;RiMin = 0;
     bool result = true;
-    int Ui,Uj,Ri,Rj;
-    for(int j = UjMin;j < UjMax; j++)
-        for(int i = UiMin; i < UiMax; i++)
-        {
-            int k = (uchar)input[i + 800 * j];
-            if(k < objectThr)
-            {
-                // break
-                Ui = i;
-                Uj = j;
-                i = 0;
-                j = 600;
-            }
-        }
 
-
-    for(int i = RiMin; i < RiMax; i++)
-        for(int j = RjMin;j < RjMax; j++)
-        {
-            int k = (uchar)input[i + 800 * j];
-            if(k < objectThr)
-            {
-                Ri = i;
-                Rj = j;
-                i = 0;
-                j = 600;
-            }
-        }
-
-    int k = ((0.353553 * ( Rj - Uj) * 2 - 10));
-    if(k < 0)
-    {
-        k = 10;
-        Rj = HEIGHT / 2;
-        Ri = WIDTH / 2;
-        Ui = WIDTH / 2 - 10;
-        Uj = HEIGHT / -10;
-        qDebug()<<" k < 0";
-        result = false;
-    }
-    if(k % 2 != 0)
-        k --;
     //    qDebug()<<"k = "<<k;
-    circleSize[index] = k*2;
 
+    circleSizeW[index] = lineRight - lineLeft +  1;
+    circleSizeH[index] = lineDown - lineUp  + 1;
 
     int I ,J;
-
-    for(int j = Rj-k; j < Rj+k; j++)
-        for(int i = Ui-k; i < Ui+k; i++)
+    int s =0;
+    for(int j = lineUp; j <= lineDown; j++)
+        for(int i = lineLeft; i <= lineRight; i++)
         {
-            I = (i - Ui+k); J = (j - Rj+k);
-            if((I + J * k*2) > WIDTH * HEIGHT  || (i + j * 800) > WIDTH * HEIGHT )
-            {
-                qDebug()<<"bad location !";
-                return false;
-            }
-            bufferCircle[index][I + J * k*2] = input[i + j * 800];
+            I = (i - lineLeft); J = (j - lineUp);
+
+            bufferCircle[index][I + J * circleSizeW[index]] = input[i + j * 800];
+            s++;
         }
-
-
+    qDebug()<<"s :"<<s;
     return result;
 }
 
@@ -538,6 +507,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     stopTriggeTest();
     camera->closeAllCameras();
     saveToHistory();
+    singleShot(0);
     event->accept();
 }
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>406</width>
-    <height>548</height>
+    <height>596</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -145,8 +145,8 @@
   <widget class="QPushButton" name="brnOK">
    <property name="geometry">
     <rect>
-     <x>240</x>
-     <y>500</y>
+     <x>250</x>
+     <y>550</y>
      <width>93</width>
      <height>27</height>
     </rect>
@@ -158,8 +158,8 @@
   <widget class="QPushButton" name="btnCancel">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>500</y>
+     <x>40</x>
+     <y>550</y>
      <width>93</width>
      <height>27</height>
     </rect>
@@ -171,8 +171,8 @@
   <widget class="QPushButton" name="brnApply">
    <property name="geometry">
     <rect>
-     <x>140</x>
-     <y>500</y>
+     <x>150</x>
+     <y>550</y>
      <width>93</width>
      <height>27</height>
     </rect>
@@ -184,8 +184,8 @@
   <widget class="QCheckBox" name="rbnCameraMode">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>420</y>
+     <x>70</x>
+     <y>480</y>
      <width>93</width>
      <height>22</height>
     </rect>
@@ -197,8 +197,8 @@
   <widget class="QCheckBox" name="cbxShowOriginalImage">
    <property name="geometry">
     <rect>
-     <x>200</x>
-     <y>420</y>
+     <x>210</x>
+     <y>480</y>
      <width>111</width>
      <height>22</height>
     </rect>
@@ -255,8 +255,8 @@
   <widget class="QCheckBox" name="cbxShowFullSize">
    <property name="geometry">
     <rect>
-     <x>200</x>
-     <y>450</y>
+     <x>210</x>
+     <y>510</y>
      <width>121</width>
      <height>22</height>
     </rect>
@@ -336,7 +336,111 @@
     <string>Holl size :</string>
    </property>
   </widget>
-  <widget class="QSpinBox" name="sbxULine">
+  <widget class="QSpinBox" name="sbxUpLine">
+   <property name="geometry">
+    <rect>
+     <x>130</x>
+     <y>430</y>
+     <width>71</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="maximum">
+    <number>600</number>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="sbxLeftLine">
+   <property name="geometry">
+    <rect>
+     <x>130</x>
+     <y>360</y>
+     <width>71</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="maximum">
+    <number>800</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_8">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>400</y>
+     <width>41</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Up</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_9">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>330</y>
+     <width>41</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Left</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_10">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>360</y>
+     <width>81</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>init lines :</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_11">
+   <property name="geometry">
+    <rect>
+     <x>260</x>
+     <y>330</y>
+     <width>41</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Right</string>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="sbxDownLine">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>430</y>
+     <width>71</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="maximum">
+    <number>600</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_12">
+   <property name="geometry">
+    <rect>
+     <x>260</x>
+     <y>400</y>
+     <width>41</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Down</string>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="sbxRightLine">
    <property name="geometry">
     <rect>
      <x>240</x>
@@ -349,50 +453,11 @@
     <number>800</number>
    </property>
   </widget>
-  <widget class="QSpinBox" name="sbxRLine">
-   <property name="geometry">
-    <rect>
-     <x>130</x>
-     <y>360</y>
-     <width>71</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="maximum">
-    <number>600</number>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_8">
-   <property name="geometry">
-    <rect>
-     <x>255</x>
-     <y>330</y>
-     <width>41</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Up</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_9">
-   <property name="geometry">
-    <rect>
-     <x>147</x>
-     <y>330</y>
-     <width>41</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Right</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_10">
+  <widget class="QLabel" name="label_13">
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>360</y>
+     <y>430</y>
      <width>81</width>
      <height>20</height>
     </rect>
