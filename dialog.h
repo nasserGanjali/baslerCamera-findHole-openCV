@@ -35,6 +35,16 @@ private slots:
 
     void on_scrObjectThr_valueChanged(int value);
 
+    void on_sbxRightLine_valueChanged(int arg1);
+
+    void on_sbxLeftLine_valueChanged(int arg1);
+
+    void on_sbxLeftLine_editingFinished();
+
+    void on_sbxRightLine_editingFinished();
+
+    void closeEvent(QCloseEvent *event);
+
 private:
     Ui::Dialog *ui;
     MainWindow *Main;

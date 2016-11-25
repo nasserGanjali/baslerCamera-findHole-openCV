@@ -25,8 +25,9 @@ MainWindow::MainWindow(QWidget *parent) :
     objectThr = 220;
     CV_lowerd = 200; CV_upperb = 255;
     CV_kernelGain = 15;
+    configDialogIsOpen = 0;
 
-//    UjMax = 600;UjMin = 10;UiMax = 799;UiMin = 300;RjMax = 400;RjMin = 10 ;RiMax = 799;RiMin = 300;
+    //    UjMax = 600;UjMin = 10;UiMax = 799;UiMin = 300;RjMax = 400;RjMin = 10 ;RiMax = 799;RiMin = 300;
     lineLeft = 300, lineRight = 500, lineUp = 400 , lineDown = 500;
 
     loadHistory();
@@ -152,7 +153,7 @@ void MainWindow::initGraphicHistory()
 
     QGraphicsScene *scene16 = new QGraphicsScene();
     scene16->setBackgroundBrush(QBrush(Qt::white));
-    ui->graphicsView_16->setScene(scene15);
+    ui->graphicsView_16->setScene(scene16);
 }
 
 void MainWindow::updateGraphicHistory(int value)
@@ -254,6 +255,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionImage_triggered()
 {
+    configDialogIsOpen = 1;
     dialogConfig->show();
 }
 
@@ -282,7 +284,7 @@ void MainWindow::getInput()
     while(!appClosed)
     {
         u_int16_t v = getGPIO();
-       // qDebug()<<v;
+        // qDebug()<<v;
 
         if(v == 3)
         {
@@ -326,9 +328,9 @@ void MainWindow::getFrame()
             triggerTimeout = res;
         else if(res == -2)
         {
-             stopTriggeTest();
-             qDebug()<<"bad shot !!!";
-//                QTimer::setSingleShot(1);
+            stopTriggeTest();
+            qDebug()<<"bad shot !!!";
+            //                QTimer::setSingleShot(1);
             singleShot(2);
             return;
         }
@@ -352,14 +354,14 @@ void MainWindow::getFrame()
     int index = indexBuffer;
     memcpy(buffer[index], (uchar*)camera->globalImageBuffer, WIDTH * HEIGHT);
 
-    if(mode && !triggerTimeout)
+    if(mode && !triggerTimeout )
     {
         // int index = (indexBuffer == 0) ? 9 : indexBuffer - 1;
         QtConcurrent::run(this,&MainWindow::Algorithm,index);
     }
     else
         indexBuffer = (index + 1) % 10;
-//        totalProdocts ++;
+    //        totalProdocts ++;
 
     //    if(!isTriggeMode)
     //    {
@@ -374,10 +376,10 @@ void MainWindow::Algorithm(int index)
 {
     char test[800*600];
     memcpy(test,buffer[index],800*600);
-    saveImage(test);
+    //    saveImage(test);
     if(findDiameter(test,index))
         findHoles(index);
-//    findDiameter(test,index);
+    //    findDiameter(test,index);
     indexBuffer = (index + 1) % 10;
 }
 
@@ -420,21 +422,25 @@ void MainWindow::findHoles(int index)
                 defect = true;
             qDebug()<<"x: "<<center[i].x<<" y: "<<center[i].y<<" radius : "<<radius[i];
         }
-        if(i != 3)
-            defect = true;
 
-        totalProdocts ++;
-        if(defect)
+        if(!configDialogIsOpen)
         {
-            defectProdocts ++;
-            lastProdoctIsDefect = 1;
-        }else
-        {
-            lastProdoctIsDefect = 0;
+            if(i != 3)
+                defect = true;
+
+            totalProdocts ++;
+            if(defect)
+            {
+                defectProdocts ++;
+                lastProdoctIsDefect = 1;
+            }else
+            {
+                lastProdoctIsDefect = 0;
+            }
         }
-
         if(!ShowOriginalImage)
             memcpy(buffer[index], drawing.data,WIDTH * HEIGHT);
+
     }
     else
     {
@@ -474,13 +480,19 @@ void MainWindow::findHoles(int index)
                     defect = true;
                 qDebug()<<"x: "<<center[i].x<<" y: "<<center[i].y<<" radius : "<<radius[i];
             }
+
             if(i != 2)
                 defect = true;
 
-            totalProdocts ++;
+            if(!configDialogIsOpen)
+            {
+                totalProdocts ++;
+                if(defect)
+                    defectProdocts ++;
+            }
+
             if(defect)
             {
-                defectProdocts ++;
                 lastProdoctIsDefect = 1;
             }else
             {

@@ -3,6 +3,8 @@
 
 #include <pylon/PylonIncludes.h>
 #include <fstream>
+#include <QCloseEvent>
+
 #ifdef PYLON_WIN_BUILD
 #    include <pylon/PylonGUI.h>
 #endif

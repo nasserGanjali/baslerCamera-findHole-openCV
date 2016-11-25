@@ -58,6 +58,7 @@ public:
     int triggerTimeout;
     int appClosed;
     int minHollSize,maxHollSize;
+    int configDialogIsOpen;
     int lineLeft ,lineRight, lineUp, lineDown ;
     bool isTriggeMode;
     //    bool isHollFinding;

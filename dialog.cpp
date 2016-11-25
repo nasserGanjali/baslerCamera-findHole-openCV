@@ -28,6 +28,12 @@ Dialog::Dialog(QWidget *parent, MainWindow *mainwindow) :
     ui->cbxShowOriginalImage->setChecked(Main->ShowOriginalImage);
 }
 
+void Dialog::closeEvent(QCloseEvent *event)
+{
+    Main->configDialogIsOpen = 0;
+    event->accept();
+}
+
 Dialog::~Dialog()
 {
     delete ui;
@@ -132,3 +138,34 @@ void Dialog::on_scrObjectThr_valueChanged(int value)
     ui->lblObjectThr->setText(QString::number(value));
 }
 
+
+void Dialog::on_sbxRightLine_valueChanged(int arg1)
+{
+
+}
+
+void Dialog::on_sbxLeftLine_valueChanged(int arg1)
+{
+
+}
+
+void Dialog::on_sbxLeftLine_editingFinished()
+{
+    int m = ui->sbxRightLine->value() - ui->sbxLeftLine->value() + 1;
+    if(m % 4 != 0 )
+        ui->sbxLeftLine->setValue(ui->sbxLeftLine->value() + (m % 4));
+
+    if(ui->sbxLeftLine->value() >= ui->sbxRightLine->value() )
+        ui->sbxLeftLine->setValue(ui->sbxRightLine->value() - 4);
+}
+
+void Dialog::on_sbxRightLine_editingFinished()
+{
+    int m = ui->sbxRightLine->value() - ui->sbxLeftLine->value() + 1;
+    qDebug()<<"m "<<m%4;
+    if(m % 4 != 0 )
+        ui->sbxRightLine->setValue(ui->sbxRightLine->value() + (4 - m % 4));
+
+    if(ui->sbxLeftLine->value() >= ui->sbxRightLine->value() )
+        ui->sbxRightLine->setValue(ui->sbxLeftLine->value() + 4);
+}
